@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const helmet = require("helmet");
 const cors = require("cors");
 const morgan = require("morgan");
@@ -11,6 +12,26 @@ const app = express();
 require("dotenv").config({
   path: path.join(process.cwd(), "/config/.env"),
 });
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
+
+// cookie parser middleware
+app.use(cookieParser());
+// Morgan
+app.use(morgan("common"));
+
+// Connect to a data base
+const db = mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log(`database connected`))
+  .catch((err) => console.error(err));
 
 app.use(helmet());
 app.use(cors());
