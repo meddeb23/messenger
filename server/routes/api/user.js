@@ -3,21 +3,23 @@ const routes = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
+const { auth } = require("../../middleware/auth");
+
 const User = require("../../model/User");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 // @route   GET /api/v1/user/login
 // @desc    login user
-// @access  public
+// @access  Public
 routes.post("/login", async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password)
-    return res.status(400).json({ messege: "All fields required" });
+    return res.status(400).json({ message: "All fields required" });
   try {
     // search for existing user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ messege: "User dose not exist" });
+    if (!user) return res.status(400).json({ message: "User dose not exist" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
@@ -32,8 +34,7 @@ routes.post("/login", async (req, res) => {
         httpOnly: true,
       })
       .json({
-        email: user.email,
-        name: user.name,
+        user: { email: user.email, name: user.name },
       });
   } catch (error) {
     res.status(400).json({ error: err.message });
@@ -46,12 +47,12 @@ routes.post("/login", async (req, res) => {
 routes.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password)
-    return res.status(400).json({ messege: "All fields required" });
+    return res.status(400).json({ message: "All fields required" });
 
   try {
     // search for existing user
     const user = await User.findOne({ email });
-    if (user) return res.status(400).json({ messege: "Email already used" });
+    if (user) return res.status(400).json({ message: "Email already used" });
 
     const salt = await bcrypt.genSalt(10);
     if (!salt) throw Error("Something went wrong with bcrypt");
@@ -77,8 +78,7 @@ routes.post("/register", async (req, res) => {
         httpOnly: true,
       })
       .json({
-        email: user.email,
-        name: user.name,
+        user: { email: user.email, name: user.name },
       });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -90,6 +90,21 @@ routes.post("/register", async (req, res) => {
 // @access  public
 routes.get("/logout", (req, res) => {
   res.send("logout user");
+});
+
+// @route   GET /api/v1/user
+// @desc    user info
+// @access  privet
+routes.get("/", auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.body.user_id.id);
+    console.log(user.email);
+    res.status(200).json({
+      user: { email: user.email, name: user.name },
+    });
+  } catch (error) {
+    console.log("Error finding User");
+  }
 });
 
 module.exports = routes;

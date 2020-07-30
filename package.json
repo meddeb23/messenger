@@ -4,8 +4,10 @@
   "description": "Messenger clone with socket.io",
   "main": "server.js",
   "scripts": {
+    "start": "npm server.js",
     "client": "cd ./client && npm start",
-    "dev": "cd ./server && nodemon server.js"
+    "server": "cd ./server && nodemon server.js",
+    "dev": "concurrently \"npm run client\" \"npm run server\""
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,7 @@
     "uuid": "^8.3.0"
   },
   "devDependencies": {
+    "concurrently": "^5.2.0",
     "nodemon": "^2.0.4"
   }
 }
