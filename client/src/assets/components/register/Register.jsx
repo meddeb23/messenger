@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
 import { login } from "../../flux/actions/userActions";
@@ -7,11 +7,12 @@ import { clearError } from "../../flux/actions/errorAction";
 
 import { useForm } from "../../utility";
 
-export default function Register() {
+export default function Register({history}) {
   const dispatch = useDispatch();
 
   const [values, setValues] = useForm({ name: "", email: "", password: "" });
   const error = useSelector((state) => state.error.message);
+  const isLogin = useSelector((state) => state.user.login);
 
   useEffect(() => {
     dispatch(clearError());
@@ -19,7 +20,10 @@ export default function Register() {
   const onSubmitForm = (e) => {
     e.preventDefault();
     dispatch(login(values));
+    history.push("/");
   };
+  if (isLogin) return <Redirect to="/" />;
+
   return (
     <div className="form">
       <form onSubmit={(e) => onSubmitForm(e)}>

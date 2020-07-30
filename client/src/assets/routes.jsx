@@ -23,8 +23,8 @@ export default function Routes() {
   return (
     <Router>
       <Switch>
-        {!login && <Route path="/login" exact component={Login} />}
-        {!login && <Route path="/register" exact component={Register} />}
+        <Route path="/login" exact component={Login} />
+        <Route path="/register" exact component={Register} />
         <PrivatRoute path="/" exact component={Home} />
       </Switch>
     </Router>
