@@ -34,7 +34,7 @@ routes.post("/login", async (req, res) => {
         httpOnly: true,
       })
       .json({
-        user: { email: user.email, name: user.name },
+        user: { id: user._id, email: user.email, name: user.name },
       });
   } catch (error) {
     res.status(400).json({ error: err.message });
@@ -78,7 +78,7 @@ routes.post("/register", async (req, res) => {
         httpOnly: true,
       })
       .json({
-        user: { email: user.email, name: user.name },
+        user: { id: user._id, email: user.email, name: user.name },
       });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -94,16 +94,33 @@ routes.get("/logout", (req, res) => {
 
 // @route   GET /api/v1/user
 // @desc    user info
-// @access  privet
+// @access  privat
 routes.get("/", auth, async (req, res) => {
   try {
     const user = await User.findById(req.body.user_id.id);
     console.log(user.email);
     res.status(200).json({
-      user: { email: user.email, name: user.name },
+      user: { id: user._id, email: user.email, name: user.name },
     });
   } catch (error) {
     console.log("Error finding User");
+  }
+});
+
+// @route   POST /api/v1/user/serach
+// @desc    search for users
+// @access  privat
+routes.post("/search", auth, async (req, res) => {
+  const { search } = req.body;
+  try {
+    const users = await User.find(
+      { name: { $regex: search, $options: "i" } },
+      "_id name"
+    );
+    if (users.length !== 0) return res.status(200).json({ users });
+    res.status(200).json({ users: [{ name: "no resualt" }] });
+  } catch (error) {
+    console.log("Cant search users");
   }
 });
 

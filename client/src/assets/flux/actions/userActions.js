@@ -79,6 +79,34 @@ export const authInfo = () => (dispatch) => {
     });
 };
 
+export const search = (search) => (dispatch) => {
+  dispatch({ type: types.LOADING });
+
+  // Headers
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
+
+  // Request body
+  const body = JSON.stringify(search);
+  axios
+    .post(`${userURL}/search`, body, config)
+    .then((res) => {
+      dispatch({
+        type: types.SEARCH_SUCCESS,
+        payload: res.data.users,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.SEARCH_FAIL,
+      });
+      dispatch(getError(err.response.data.message, err.response.status));
+    });
+};
+
 export const logout = () => (dispatch) => {
   axios
     .get(`${userURL}/logout`)

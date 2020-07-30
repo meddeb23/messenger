@@ -9,6 +9,7 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case types.AUTH_START:
+    case types.LOADING:
       return {
         ...state,
         loading: true,
@@ -38,6 +39,17 @@ export default function (state = initialState, action) {
         loading: false,
         user: action.payload,
         login: true,
+      };
+    case types.SEARCH_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+        search: action.payload,
+      };
+    case types.SEARCH_FAIL:
+      return {
+        ...state,
+        loading: false,
       };
     default:
       return state;

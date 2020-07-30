@@ -41,10 +41,8 @@ app.use(helmet());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
-
 // parse application/json
 app.use(bodyParser.json());
-
 // cookie parser middleware
 app.use(cookieParser());
 // Morgan
@@ -56,14 +54,17 @@ const server = require("http").Server(app);
 
 const io = require("socket.io")(server);
 
-// io.on("connection", (socket) => {
-//   console.log("user Connecting");
-//   socket.on("join-room", (roomId) => {
-//     const userId = uuidV4();
-//     socket.join(roomId);
-//     socket.emit("get-info", userId);
-//     socket.to(roomId).broadcast.emit("user-connected", userId);
-//   });
-// });
+io.on("connection", (socket) => {
+  console.log("user Connecting");
+  socket.on("start_chat", ({ sender, reciever }) => {
+    console.log(`start chat bwn ${sender} and ${reciever}`);
+  });
+  // socket.on("join-room", (roomId) => {
+  //   const userId = uuidV4();
+  //   socket.join(roomId);
+  //   socket.emit("get-info", userId);
+  //   socket.to(roomId).broadcast.emit("user-connected", userId);
+  // });
+});
 
 module.exports = { server };

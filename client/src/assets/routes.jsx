@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   BrowserRouter as Router,
   Switch,
@@ -14,7 +14,6 @@ import Home from "./components/home/Home";
 
 export default function Routes() {
   const dispatch = useDispatch();
-  const login = useSelector((state) => state.user.login);
 
   useEffect(() => {
     dispatch(authInfo());
@@ -26,6 +25,7 @@ export default function Routes() {
         <Route path="/login" exact component={Login} />
         <Route path="/register" exact component={Register} />
         <PrivatRoute path="/" exact component={Home} />
+        <Redirect from="/*" to="/" />
       </Switch>
     </Router>
   );
