@@ -2,15 +2,20 @@ import React, { useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../../flux/actions/userActions";
+import { register } from "../../flux/actions/userActions";
 import { clearError } from "../../flux/actions/errorAction";
 
 import { useForm } from "../../utility";
 
-export default function Register({history}) {
+export default function Register({ history }) {
   const dispatch = useDispatch();
 
-  const [values, setValues] = useForm({ name: "", email: "", password: "" });
+  const [values, setValues] = useForm({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+  });
   const error = useSelector((state) => state.error.message);
   const isLogin = useSelector((state) => state.user.login);
 
@@ -19,7 +24,7 @@ export default function Register({history}) {
   }, []);
   const onSubmitForm = (e) => {
     e.preventDefault();
-    dispatch(login(values));
+    dispatch(register(values));
     history.push("/");
   };
   if (isLogin) return <Redirect to="/" />;
@@ -30,14 +35,25 @@ export default function Register({history}) {
         <h1>Register</h1>
 
         <div className="form-group">
-          <label htmlFor="exampleInputName1">Full name</label>
+          <label htmlFor="exampleInputName1">First name</label>
           <input
             onChange={(e) => setValues(e)}
             type="text"
-            name="name"
+            name="first_name"
             className="form-control"
             id="exampleInputName1"
-            placeholder="Enter Name"
+            placeholder="Enter first name"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="exampleInputName1">Last name</label>
+          <input
+            onChange={(e) => setValues(e)}
+            type="text"
+            name="last_name"
+            className="form-control"
+            id="exampleInputName1"
+            placeholder="Enter last name"
           />
         </div>
         <div className="form-group">

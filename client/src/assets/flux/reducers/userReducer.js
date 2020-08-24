@@ -51,6 +51,12 @@ export default function (state = initialState, action) {
         ...state,
         loading: false,
       };
+    case types.GET_RECEIVER:
+      return {
+        ...state,
+        loading: false,
+        receiver: action.payload,
+      };
     default:
       return state;
   }

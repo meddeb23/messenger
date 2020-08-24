@@ -1,0 +1,15 @@
+.sidebar {
+  width: 35%;
+  max-width: 350px;
+  background: #2f2f2f;
+  min-height: 100vh;
+  padding: 1rem 0;
+  .userInfo {
+    h1 {
+      text-align: left;
+      color: #f5f5f5;
+      padding-left: 1rem;
+      font-size: 28px;
+    }
+  }
+}

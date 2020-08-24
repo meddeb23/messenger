@@ -15,9 +15,13 @@ const MessageSchema = new Schema({
     type: String,
     require: true,
   },
-  delevered: {
+  seen: {
     type: Boolean,
     default: false,
+  },
+  chat: {
+    type: String,
+    required: true,
   },
 });
 

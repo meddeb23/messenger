@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken");
-const User = require("../model/User");
 
 const auth = (req, res, next) => {
   const { token } = req.cookies;
@@ -10,6 +9,7 @@ const auth = (req, res, next) => {
         ...req.body,
         user_id: decode,
       };
+      console.log(`Middleware : decode = ${decode}`);
       next();
     });
   } else {

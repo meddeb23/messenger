@@ -27,8 +27,6 @@ export const login = (user) => (dispatch) => {
       dispatch({
         type: types.AUTH_FAIL,
       });
-      console.log(err.response.data.message);
-
       dispatch(getError(err.response.data.message, err.response.status));
     });
 };
@@ -107,6 +105,13 @@ export const search = (search) => (dispatch) => {
     });
 };
 
+export const deleteSearch = () => (dispatch) => {
+  dispatch({
+    type: types.SEARCH_SUCCESS,
+    payload: [],
+  });
+};
+
 export const logout = () => (dispatch) => {
   axios
     .get(`${userURL}/logout`)
@@ -118,4 +123,22 @@ export const logout = () => (dispatch) => {
     .catch((err) =>
       dispatch(getError(err.response.data.message, err.response.status))
     );
+};
+
+export const getReceiver = (receiver_id) => (dispatch) => {
+  dispatch({ type: types.LOADING });
+  axios
+    .get(`${userURL}/${receiver_id}`)
+    .then((res) => {
+      dispatch({
+        type: types.GET_RECEIVER,
+        payload: res.data.user,
+      });
+    })
+    .catch((err) => {
+      dispatch({
+        type: types.AUTH_FAIL,
+      });
+      dispatch(getError(err.response.data.message, err.response.status));
+    });
 };
