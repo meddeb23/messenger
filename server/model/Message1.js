@@ -7,6 +7,10 @@ const insertMessage = async (body, sender_id, chat_id) => {
        VALUES ($1,$2,$3)`,
       [body, sender_id, chat_id]
     );
+    const chat = await pool.query(
+      `UPDATE chat SET updated_at = NOW() WHERE id = $1`,
+      [chat_id]
+    );
     return Promise.resolve();
   } catch (error) {
     return Promise.reject(error);
@@ -16,8 +20,23 @@ const insertMessage = async (body, sender_id, chat_id) => {
 const getChatMessages = async (chat_id, offset, limit) => {
   try {
     const messages = await pool.query(
-      `SELECT body, sender_id FROM message WHERE chat_id=$1 ORDER BY created_at DESC OFFSET $2 LIMIT $3;`,
+      `SELECT msg.id, msg.chat_id, msg.body, msg.created_at, msg.sender_id, u.first_name, u.last_name from message as msg
+       JOIN users as u ON msg.sender_id = u.id
+       WHERE chat_id=$1 ORDER BY created_at DESC OFFSET $2 LIMIT $3;`,
       [chat_id, offset, limit]
+    );
+    return Promise.resolve(messages.rows);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+const messageById = async (msgId) => {
+  try {
+    const messages = await pool.query(
+      `SELECT msg.id, msg.chat_id, msg.body, msg.created_at, msg.sender_id, u.first_name, u.last_name from message as msg
+       JOIN users as u ON msg.sender_id = u.id
+       WHERE id=$1`,
+      [msgId]
     );
     return Promise.resolve(messages.rows);
   } catch (error) {
@@ -50,4 +69,24 @@ const getUserChat = async (user_id, offset, limit) => {
   }
 };
 
-module.exports = { insertMessage, getChatMessages, createChat, getUserChat };
+const getChatDetail = async (chat_id) => {
+  try {
+    const chat = await pool.query(
+      `SELECT * FROM chat WHERE id = $1
+       `,
+      [chat_id]
+    );
+    return Promise.resolve(chat.rows[0]);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+module.exports = {
+  insertMessage,
+  getChatMessages,
+  createChat,
+  getUserChat,
+  getChatDetail,
+  messageById,
+};

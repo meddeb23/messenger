@@ -2,6 +2,7 @@
   .form-warpper {
     position: relative;
     padding: 0 1rem;
+    border-bottom: 1px solid #303841;
   }
   form {
     display: flex;
@@ -26,12 +27,15 @@
         font-size: 1rem;
         outline: none;
         line-height: 1.5;
-        color: #fff;
-        background-color: #212121;
+        color: #65707b;
+        background-color: #303841;
         background-clip: padding-box;
         border: none;
         border-radius: 30px;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+      }
+      ::placeholder {
+        color: #65707b;
       }
     }
     #emailHelp {
@@ -41,8 +45,8 @@
       outline: none;
       margin-left: 10px;
       cursor: pointer;
-      color: #fff;
-      background-color: #212121;
+      color: #65707b;
+      background-color: #303841;
       display: inline-block;
       font-weight: 400;
       text-align: center;

@@ -9,12 +9,11 @@ const auth = (req, res, next) => {
         ...req.body,
         user_id: decode,
       };
-      console.log(`Middleware : decode = ${decode}`);
       next();
     });
   } else {
     res.status(403).json({ success: false, message: "Access Denied" });
-    next();
+    // next();
   }
 };
 

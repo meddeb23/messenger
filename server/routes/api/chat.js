@@ -7,8 +7,9 @@ const {
   getUserChat,
   getChatMessages,
   insertMessage,
+  getChatDetail,
 } = require("../../model/Message1");
-
+const { getUserById } = require("../../model/User1");
 // @route   GET /api/v1/chat/?offset=0&limit=5
 // @desc    Get a limited number of user chats
 // @access  Privat
@@ -22,6 +23,12 @@ routes.get("/", auth, async (req, res) => {
   try {
     // search for existing user
     const chats = await getUserChat(user_id, offset, limit);
+
+    for (let chat of chats) {
+      chat.sender_id = await getUserById(chat.sender_id);
+      chat.receiver_id = await getUserById(chat.receiver_id);
+    }
+
     res.status(200).json({ chats });
   } catch (error) {
     res.status(400).json({ error: err.message });
@@ -41,8 +48,12 @@ routes.get("/:chat_id", auth, async (req, res) => {
     return res.status(400).json({ message: "Bad query params" });
   }
   try {
-    const messages = await getChatMessages(chat_id, offset, limit);
-    res.status(200).json({ messages });
+    const chat = await getChatDetail(chat_id);
+    chat.sender_id = await getUserById(chat.sender_id);
+    chat.receiver_id = await getUserById(chat.receiver_id);
+    let messages = await getChatMessages(chat_id, offset, limit);
+    messages = messages.reverse();
+    res.status(200).json({ messages, chat });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -54,6 +65,7 @@ routes.get("/:chat_id", auth, async (req, res) => {
 routes.post("/message", auth, async (req, res) => {
   try {
     const { user_id, chat_id, body } = req.body;
+    console.log(req.body);
     await insertMessage(body, user_id.id, chat_id);
     req.io.sockets.emit("message", { chat_id, user_id: user_id.id, body });
     res.status(200).json({ message: "sucess" });

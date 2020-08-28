@@ -15,5 +15,6 @@ export const GET_ERROR = "GET_ERROR";
 
 export const GET_CHAT_HISTORY = "GET_CHAT_HISTORY";
 export const GET_CURRENT_CHAT = "GET_CURRENT_CHAT";
+export const RECEIVE_MSG = "RECEIVE_MSG";
 
 export const GET_RECEIVER = "GET_RECEIVER";

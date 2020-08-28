@@ -25,9 +25,9 @@ export default function Register({ history }) {
   const onSubmitForm = (e) => {
     e.preventDefault();
     dispatch(register(values));
-    history.push("/");
+    history.push("/home");
   };
-  if (isLogin) return <Redirect to="/" />;
+  if (isLogin) return <Redirect to="/home" />;
 
   return (
     <div className="form">

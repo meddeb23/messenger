@@ -3,7 +3,8 @@ import * as types from "../actions/types";
 const initialState = {
   loading: false,
   chatHistory: null,
-  currentChat: null,
+  currentChatDetail: null,
+  currentChatMsg: null,
 };
 
 export default function (state = initialState, action) {
@@ -17,13 +18,19 @@ export default function (state = initialState, action) {
       return {
         ...state,
         loading: false,
-        currentChat: action.payload,
+        currentChatDetail: action.payload.chat,
+        currentChatMsg: action.payload.messages,
       };
     case types.GET_CHAT_HISTORY:
       return {
         ...state,
         loading: false,
         chatHistory: action.payload,
+      };
+    case types.RECEIVE_MSG:
+      return {
+        ...state,
+        currentChatMsg: [action.payload, ...state.currentChatMsg],
       };
     case types.ACTION_FAIL:
       return {

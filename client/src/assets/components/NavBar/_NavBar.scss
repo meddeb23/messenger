@@ -1,0 +1,24 @@
+.navBar {
+  background-color: #303841;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  ul {
+    a {
+      display: block;
+      padding: 1rem;
+      font-size: 28px;
+      color: #a5b5c1;
+      text-align: center;
+      border-left: 4px solid #303841;
+      transition: border-left-color 400ms ease-in-out, color 400ms ease-in-out,
+        background-color 300ms ease-in-out;
+    }
+    a:hover,
+    a.active {
+      border-left-color: #55d48b;
+      color: #f7f7f8;
+      background-color: #363e47;
+    }
+  }
+}

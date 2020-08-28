@@ -6,10 +6,60 @@
   min-height: 100vh;
   align-items: center;
   position: relative;
+  background-color: #f2f7f7;
+  .chat {
+    width: 100%;
+    height: 100%;
+    padding: 90px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    ul {
+      width: 100%;
+      max-width: 800px;
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      small {
+        color: #99a8b4;
+      }
+      .msgStyle-1 {
+        width: fit-content;
+        margin: 10px 15px 10px auto;
+        text-align: center;
+        p.msg {
+          background-color: #54d38a;
+          color: #ffffff;
+          padding: 9px 21px;
+          border-radius: 4px;
+        }
+      }
+      .msgStyle-2 {
+        width: fit-content;
+        margin: 10px auto 10px 15px;
+        text-align: center;
+        p.msg {
+          background-color: #ffffff;
+          color: #99a8b4;
+          padding: 9px 21px;
+          border-radius: 4px;
+        }
+      }
+    }
+    .welcomeMsg {
+      text-align: center;
+      margin: 100px 0;
+    }
+  }
+  .No-chat {
+  }
   .chatForm {
     position: absolute;
     bottom: 0;
     width: 100%;
+    background-color: #fff;
     form {
       display: flex;
       padding: 1rem 3rem;
@@ -30,6 +80,9 @@
           border-radius: 30px;
           transition: border-color 0.15s ease-in-out,
             box-shadow 0.15s ease-in-out;
+        }
+        ::placeholder {
+          color: #d0d6db;
         }
       }
       button {

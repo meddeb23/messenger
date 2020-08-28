@@ -1,5 +1,5 @@
 import React from "react";
-import Routes from "./assets/routes";
+import Routes from "./assets/routes/routes";
 import store from "./assets/flux/store";
 import { Provider } from "react-redux";
 

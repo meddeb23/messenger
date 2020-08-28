@@ -24,7 +24,7 @@ export default function Login({ history }) {
     history.push("/");
   };
 
-  if (isLogin) return <Redirect to="/" />;
+  if (isLogin) return <Redirect to="/home" />;
 
   return (
     <div className="form">

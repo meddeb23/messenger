@@ -29,7 +29,7 @@ routes.post("/login", async (req, res) => {
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, {});
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, {});
     if (!token) throw Error("Couldnt sign the token");
 
     res
@@ -108,6 +108,7 @@ routes.get("/logout", (req, res) => {
 routes.get("/", auth, async (req, res) => {
   try {
     const user = await getUserById(req.body.user_id.id);
+    if (!user) return res.status(400).json({ message: "Bad Request" });
     res.status(200).json({
       user: {
         id: user.id,
@@ -117,7 +118,6 @@ routes.get("/", auth, async (req, res) => {
       },
     });
   } catch (error) {
-    console.log("Error finding User");
     res.status(500).json({ message: "Error finding User info" });
   }
 });
@@ -128,7 +128,6 @@ routes.get("/", auth, async (req, res) => {
 routes.post("/search", auth, async (req, res) => {
   const { search } = req.body;
   try {
-    console.log("search for users");
     const users = await getUser(search);
     if (users.length !== 0) return res.status(200).json({ users });
     res.status(200).json({ users: [{ name: "no resualt" }] });

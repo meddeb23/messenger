@@ -29,7 +29,9 @@ export default function SearchBar() {
             placeholder="Search"
           />
         </div>
-        <button>Search</button>
+        <button>
+          <i className="fa fa-plus"></i>
+        </button>
       </form>
       {resualt && (
         <ul className="resualt">
