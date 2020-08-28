@@ -1,6 +1,6 @@
 # dependencies
 /node_modules
-
+/archive
 /server/config/.env
 
 /db.js
