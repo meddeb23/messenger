@@ -1,36 +1,35 @@
 const express = require("express");
 const routes = express.Router();
+
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const { auth } = require("../../middleware/auth");
-const {
-  getUserByEmail,
-  getUserById,
-  insertUser,
-  getUser,
-} = require("../../model/User1");
+const { auth } = require("../../../middleware/auth");
+const User = require("../../models/User");
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-// @route   GET /api/v1/user/login
+// @route   POST /api/v1/user/login
 // @desc    login user
 // @access  Public
-routes.post("/login", async (req, res) => {
+routes.post("/login", async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
     return res.status(400).json({ message: "All fields required" });
   try {
     // search for existing user
-    const user = await getUserByEmail(email);
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User dose not exist" });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
 
-    const token = jwt.sign({ id: user.id }, JWT_SECRET, {});
+    const token = jwt.sign({ _id: user._id }, JWT_SECRET, {});
     if (!token) throw Error("Couldnt sign the token");
+
+    user.login = true;
+    await user.save();
 
     res
       .status(200)
@@ -39,28 +38,28 @@ routes.post("/login", async (req, res) => {
       })
       .json({
         user: {
-          id: user.id,
+          _id: user._id,
           email: user.email,
-          first_name: user.first_name,
-          last_name: user.last_name,
+          name: user.name,
         },
       });
   } catch (error) {
-    res.status(400).json({ error: err.message });
+    next(error);
   }
 });
 
 // @route   GET /api/v1/user/register
 // @desc    register user
 // @access  public
-routes.post("/register", async (req, res) => {
-  const { first_name, last_name, email, password } = req.body;
-  if (!first_name || !last_name || !email || !password)
+routes.post("/register", async (req, res, next) => {
+  const { name, email, password, cPassword } = req.body;
+  if (!name || !cPassword || !email || !password)
     return res.status(400).json({ message: "All fields required" });
-
+  if (password !== cPassword)
+    return res.status(400).json({ message: "Passwords don't matchs" });
   try {
     // search for existing user
-    const user = await getUserByEmail(email);
+    const user = await User.findOne({ email });
     if (user) return res.status(400).json({ message: "Email already used" });
 
     const salt = await bcrypt.genSalt(10);
@@ -69,12 +68,17 @@ routes.post("/register", async (req, res) => {
     const hash = await bcrypt.hash(password, salt);
     if (!hash) throw Error("Something went wrong hashing the password");
 
-    await insertUser(first_name, last_name, email, hash);
+    const newUser = new User({
+      name,
+      password: hash,
+      email,
+      login: true,
+    });
 
-    const savedUser = await getUserByEmail(email);
+    const savedUser = await newUser.save();
     if (!savedUser) throw Error("Something went wrong saving the user");
 
-    const token = jwt.sign({ id: savedUser.id }, JWT_SECRET, {});
+    const token = jwt.sign({ _id: savedUser._id }, JWT_SECRET, {});
     if (!token) throw Error("Couldnt sign the token");
 
     res
@@ -84,22 +88,23 @@ routes.post("/register", async (req, res) => {
       })
       .json({
         user: {
-          id: savedUser.id,
+          _id: savedUser._id,
           email: savedUser.email,
-          first_name: savedUser.first_name,
-          last_name: savedUser.last_name,
+          name: savedUser.name,
         },
       });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
+  } catch (error) {
+    next(error);
   }
 });
 
 // @route   GET /api/v1/user/logout
 // @desc    login user
 // @access  public
-routes.get("/logout", (req, res) => {
-  res.send("logout user");
+routes.get("/logout", auth, (req, res) => {
+  User.findByIdAndUpdate(req.body.user._id, { login: false });
+  res.clearCookie("token");
+  res.status(200).send("logout user");
 });
 
 // @route   GET /api/v1/user
@@ -107,14 +112,12 @@ routes.get("/logout", (req, res) => {
 // @access  privat
 routes.get("/", auth, async (req, res) => {
   try {
-    const user = await getUserById(req.body.user_id.id);
-    if (!user) return res.status(400).json({ message: "Bad Request" });
+    const { user } = req.body;
     res.status(200).json({
       user: {
-        id: user.id,
+        _id: user._id,
         email: user.email,
-        first_name: user.first_name,
-        last_name: user.last_name,
+        name: user.name,
       },
     });
   } catch (error) {
@@ -128,8 +131,18 @@ routes.get("/", auth, async (req, res) => {
 routes.post("/search", auth, async (req, res) => {
   const { search } = req.body;
   try {
-    const users = await getUser(search);
-    if (users.length !== 0) return res.status(200).json({ users });
+    const find_users = await User.find({ name: search });
+    if (find_users.length !== 0) {
+      const users = [];
+      for (const user of find_users) {
+        users.push({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+        });
+      }
+      return res.status(200).json({ users });
+    }
     res.status(200).json({ users: [{ name: "no resualt" }] });
   } catch (error) {
     res.status(500).json({ message: "Error finding Users" });
@@ -137,23 +150,21 @@ routes.post("/search", auth, async (req, res) => {
   }
 });
 
-// @route   POST /api/v1/user/:search_id
+// @route   GET /api/v1/user/:search_id
 // @desc    search for user by id
 // @access  privat
 routes.get("/:search_id", auth, async (req, res) => {
   const { search_id } = req.params;
   try {
-    const user = await getUserById(search_id);
+    const user = await User.findById(search_id);
     if (!user) return res.status(404).json({ message: "user dont exist" });
     res.status(200).json({
-      id: user.id,
+      id: user._id,
       email: user.email,
-      first_name: user.first_name,
-      last_name: user.last_name,
+      name: user.name,
     });
   } catch (error) {
-    console.log("Cant search users");
-    res.status(500).json({ message: "Error finding Users" });
+    throw error;
   }
 });
 

@@ -3,11 +3,13 @@ const { Schema, model } = require("mongoose");
 // Create Schema
 const ChatSchema = new Schema({
   sender: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref:"user",
     required: true,
   },
   receiver: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref:"user",
     required: true,
   },
   create_at: {
@@ -18,6 +20,10 @@ const ChatSchema = new Schema({
     type: Date,
     default: Date.now(),
   },
+  deleted: {
+    type: Boolean,
+    default: false
+  }
 });
 
 const Chat = model("chat", ChatSchema);

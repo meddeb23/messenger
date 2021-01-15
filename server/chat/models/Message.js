@@ -1,5 +1,4 @@
 const { Schema, model } = require("mongoose");
-const User = require("./User");
 
 // Create Schema
 const MessageSchema = new Schema({
@@ -9,19 +8,25 @@ const MessageSchema = new Schema({
   },
   send_Date: {
     type: Date,
-    default: Date.now,
+    default: Date.now(),
   },
-  sender_id: {
-    type: String,
+  sender: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
     require: true,
   },
-  seen: {
-    type: Boolean,
-    default: false,
+  status: {
+    type: String,
+    default: "delivered",
   },
   chat: {
-    type: String,
-    required: true,
+    type: Schema.Types.ObjectId,
+    ref: "chat",
+    require: true,
+  },
+  deleted: {
+    type: Boolean,
+    default: false,
   },
 });
 

@@ -19,9 +19,13 @@ const UserSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  last_login: {
-    type: Date,
-    default: Date.now,
+  login: {
+    type: Boolean,
+    default: false,
+  },
+  io_id: {
+    type: String,
+    default: "",
   },
 });
 

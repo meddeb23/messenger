@@ -3,10 +3,12 @@ CREATE TABLE users
     id BIGSERIAL NOT NULL PRIMARY KEY,
     first_name VARCHAR(50) NOT NULL,
     last_name VARCHAR(50) NOT NULL,
+    socket_id VARCHAR(50),
     email VARCHAR(150) NOT NULL,
     password VARCHAR(200) NOT NULL,
     last_login DATE NOT NULL DEFAULT NOW()
 );
+
 CREATE TABLE chat
 (
     id BIGSERIAL NOT NULL PRIMARY KEY,

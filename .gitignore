@@ -2,5 +2,5 @@
 /node_modules
 /archive
 /server/config/.env
-
+/db.sql
 /db.js
