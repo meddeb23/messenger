@@ -1,8 +1,5 @@
 import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { useContext } from "react";
-import { useSelector } from "react-redux";
-
+import React, { useContext, useState, useEffect } from "react";
 import { ChatCard } from "../components";
 import { ChatContext, UserContext } from "../context";
 
@@ -26,8 +23,6 @@ export function ChatHistory() {
 
   // const limit = 10;
   // const [offset, setOffset] = useState(0);
-
-  const chats = useSelector((state) => state.chat.chatHistory);
 
   const onLoadChatHistory = async () => {
     try {
