@@ -1,29 +1,34 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { ChatContext } from "../context";
+import { ChatContext, UserContext } from "../context";
 
 export function ChatFooter() {
   const [msg, setMsg] = useState("");
   const { chat, setChat, setChatList, chatList } = useContext(ChatContext);
-
+  const { user } = useContext(UserContext);
   const onSendMsg = async (e) => {
     e.preventDefault();
     if (msg.length === 0) return;
     try {
       const obj = {
+        _id: "msg" + Math.floor(Math.random() * 10000),
         chat_id: chat._id,
         body: msg,
+        sender: user._id,
+        send_Date: Date.now(),
+        status: "sending",
       };
+      setChat({ ...chat, messages: [...chat.messages, obj] });
+      setMsg("");
       const res = await axios.post("/api/v1/chat/message", obj);
-      if (res.status === 200) {
-        setChat({ ...chat, messages: [...chat.messages, res.data] });
-        setMsg("");
+      if (res.status === 201) {
         // display the recent chat in the top of the chat history
-        const newChatList = chatList.filter((item) => item._id !== chat._id);
-        const activeChat = chatList.find((item) => item._id === chat._id);
-        activeChat.lastMsg = res.data;
-        newChatList.unshift(activeChat);
-        setChatList(newChatList);
+        // const newChatList = chatList.filter((item) => item._id !== chat._id);
+        // const activeChat = chatList.find((item) => item._id === chat._id);
+        // activeChat.lastMsg = res.data;
+        // newChatList.unshift(activeChat);
+        // setChatList(newChatList);
+        console.log("msg saved");
       }
     } catch (error) {
       console.log(error);
@@ -31,7 +36,7 @@ export function ChatFooter() {
   };
 
   return (
-    <form className=" bg-white border-t-2 flex flex-row items-center space-x-4 py-2 px-2">
+    <form className=" bg-white border-t-2 flex flex-row items-center space-x-4 h-16 px-2">
       <div className="hidden md:flex cursor-pointer w-8 h-8 rounded-full border  items-center justify-center">
         <svg
           className="w-4 text-gray-500"
@@ -81,7 +86,7 @@ export function ChatFooter() {
       <button
         type="submit"
         style={{ backgroundColor: "#4c60f2" }}
-        className="cursor-pointer w-10 h-10 shadow-lg rounded-full border flex flex-none items-center justify-center"
+        className="outline-none cursor-pointer w-10 h-10 shadow-lg rounded-full border flex flex-none items-center justify-center"
         onClick={(e) => onSendMsg(e)}
       >
         <svg

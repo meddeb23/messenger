@@ -1,5 +1,6 @@
 const User = require("../user/models/User");
 const jwt = require("jsonwebtoken");
+const Device = require("../user/models/Devices");
 
 const JWT_SECRET = process.env.JWT_SECRET || "CKJ$%sGKGF$KJJfHFL";
 
@@ -50,27 +51,42 @@ const isAdmin = async (req, res, next) => {
   }
 };
 // sokcet auth
-const socketAuth = (io, socket) => {
-  io.to(socket.id).emit("auth");
-  socket.on("login", async (_id) => {
+const socketAuth = async (io_id, _id) => {
+  try {
     let user = await User.findById(_id);
+    let connectionExist = await Device.findOne({ io_id });
+    if (!connectionExist) {
+      const newConnection = new Device({
+        user: user._id,
+        io_id: io_id,
+      });
+      const savedConnection = await newConnection.save();
+      console.log(
+        `${user.name} is online with socket id : ${savedConnection.io_id}`
+      );
+    }
     user.login = true;
-    user.io_id = socket.id;
     await user.save();
-    console.log(`${user.name} is online`);
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const disconnectUser = async (id) => {
   try {
-    let user = await User.findOne({ io_id: id });
-    if (user) {
-      user.login = false;
-      user.io_id = "";
-      await user.save();
-      console.log(`${user.name} is offline`);
+    console.log(`Disconnecting user with socket id : ${id}`);
+    const deletedConnection = await Device.findOneAndDelete({ io_id: id });
+    const existingConnections = await Device.find({
+      user: deletedConnection.user,
+    });
+    if (existingConnections.length === 0) {
+      let user = await User.findById(deletedConnection.user);
+      if (user) {
+        user.login = false;
+        await user.save();
+        console.log(`${user.name} is offline`);
+      }
     }
-    console.log(`user is offline`);
   } catch (error) {
     console.log(error);
   }

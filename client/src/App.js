@@ -1,31 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Routes from "./routes/routes";
 import { UserContext } from "./context";
 import { ChatContext } from "./context/ChatContext";
 
-// import io from "socket.io-client";
-import socket_client from "./socket";
-
-// let socket;
-// const ENDPOINT = "http://localhost:5005";
-
+import SocketProvider from "./utility/SocketProvider";
 function App() {
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  // Active chat
   const [chat, setChat] = useState(null);
   const [receiver, setReceiver] = useState(null);
   const [chatList, setChatList] = useState([]);
-
-  useEffect(() => {
-    socket_client.onReceiveMsg(chat, setChat, chatList, setChatList);
-  }, [chat, chatList]);
-  useEffect(() => {
-    if (user) {
-      console.log("auth requet");
-      socket_client.ioConnection(user._id);
-    }
-  }, [user]);
 
   return (
     <UserContext.Provider
@@ -48,7 +34,9 @@ function App() {
           setChatList,
         }}
       >
-        <Routes />
+        <SocketProvider user={user}>
+          <Routes />
+        </SocketProvider>
       </ChatContext.Provider>
     </UserContext.Provider>
   );

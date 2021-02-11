@@ -17,7 +17,7 @@ const MessageSchema = new Schema({
   },
   status: {
     type: String,
-    default: "delivered",
+    default: "send",
   },
   chat: {
     type: Schema.Types.ObjectId,

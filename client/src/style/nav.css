@@ -1,0 +1,6 @@
+@media screen and (max-width: 768px) {
+  nav {
+    height: calc(100% - 2rem);
+    transition: left 500ms ease;
+  }
+}

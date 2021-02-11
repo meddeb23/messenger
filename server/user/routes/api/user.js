@@ -1,6 +1,6 @@
 const express = require("express");
 const routes = express.Router();
-
+const path = require("path");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -112,16 +112,75 @@ routes.get("/logout", auth, (req, res) => {
 // @access  privat
 routes.get("/", auth, async (req, res) => {
   try {
+    // console.log(req.headers["user-agent"]);
+    // console.log(req.headers["sec-ch-ua"]);
+
     const { user } = req.body;
     res.status(200).json({
       user: {
         _id: user._id,
         email: user.email,
         name: user.name,
+        phone: user.phone,
+        bio: user.bio,
+        location: user.location,
+        profile_img: user.profile_img,
       },
     });
   } catch (error) {
     res.status(500).json({ message: "Error finding User info" });
+  }
+});
+
+// @route   PUT /api/v1/user
+// @desc    update user info
+// @access  privat
+routes.post("/upload_pic", auth, async (req, res, next) => {
+  const { user } = req.body;
+  try {
+    // file upload handler
+    if (req.files === null) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const file = req.files.file;
+    const regex = /^image\/(png|jpg|jpeg)$/;
+    console.log(req.files);
+    if (!regex.test(file.mimetype))
+      return res
+        .status(400)
+        .json({ message: "File type should be png, jpg, or jpeg" });
+    const err = await file.mv(
+      path.join(
+        __dirname,
+        "..",
+        "..",
+        "..",
+        "public",
+        "profile_images",
+        file.name
+      )
+    );
+    user.profile_img = `/static/profile_images/${file.name}`;
+    console.log("update user");
+    const newUser = await user.save();
+    res.json({ user: newUser });
+    // end file upload handler
+  } catch (error) {
+    next(error);
+  }
+});
+routes.post("/information", auth, async (req, res, next) => {
+  const { user, values } = req.body;
+  try {
+    for (const key in values) {
+      if (values.hasOwnProperty(key)) {
+        user[key] = values[key];
+      }
+    }
+    const newUser = await user.save();
+    res.json({ user: newUser });
+  } catch (error) {
+    next();
   }
 });
 
@@ -130,8 +189,9 @@ routes.get("/", auth, async (req, res) => {
 // @access  privat
 routes.post("/search", auth, async (req, res) => {
   const { search } = req.body;
+  const regex = search ? new RegExp(search) : null;
   try {
-    const find_users = await User.find({ name: search });
+    const find_users = await User.find({ name: regex });
     if (find_users.length !== 0) {
       const users = [];
       for (const user of find_users) {
@@ -151,7 +211,7 @@ routes.post("/search", auth, async (req, res) => {
 });
 
 // @route   GET /api/v1/user/:search_id
-// @desc    search for user by id
+// @desc    Get user by id
 // @access  privat
 routes.get("/:search_id", auth, async (req, res) => {
   const { search_id } = req.params;

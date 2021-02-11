@@ -5,7 +5,7 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
-import { Login, MessagesPage, Register } from "../pages";
+import { Login, MessagesPage, Register, Setting } from "../pages";
 import { Body } from "../components";
 import AuthRoute from "./authRoute";
 
@@ -17,17 +17,15 @@ export default function Routes() {
           <Route path="/login" exact>
             <Login />
           </Route>
-
           <Route path="/register" exact>
             <Register />
           </Route>
-
           <AuthRoute path="/messages" exact>
             <MessagesPage />
           </AuthRoute>
-          {/* <Route path="/messages" exact>
-            <MessagesPage />
-          </Route> */}
+          <AuthRoute path="/setting" exact>
+            <Setting />
+          </AuthRoute>
           <Redirect from="/*" to="/messages" />
         </Switch>
       </Body>

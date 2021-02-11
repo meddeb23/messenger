@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { ChatFooter, ChatHeader } from "../components";
 import { UserContext } from "../context";
+import ScrollToBottom from "react-scroll-to-bottom";
 
 export function ChatTemplate({ chat }) {
   const { user } = useContext(UserContext);
@@ -11,11 +12,15 @@ export function ChatTemplate({ chat }) {
   };
 
   return (
-    <div className="flex flex-col absolute top-0 left-0 h-full w-full md:relative rounded-md bg-white border-2 border-gray-200 flex-auto md:h-auto">
+    <div className="flex flex-col absolute top-0 left-0 h-full w-full md:w-auto md:relative rounded-md bg-white border-none md:border-2 border-gray-200 flex-auto md:h-auto">
       {chat.receiver && <ChatHeader receiver={chat.receiver} />}
 
-      <div id="chat_body" className=" flex-auto overflow-y-auto ">
-        <div className="px-2 py-2 w-full flex flex-col justify-end">
+      <div
+        id="chat_body"
+        style={{ height: "calc(100vh - 11rem)" }}
+        className=" flex-auto"
+      >
+        <ScrollToBottom className="w-full h-full">
           {/* <div className="w-20 border rounded-full text-center text-sm bg-gray-100 text-gray-500 font-bold py-1 mx-auto my-2">
             18 jun
           </div> */}
@@ -25,29 +30,22 @@ export function ChatTemplate({ chat }) {
                 key={msg._id}
                 className={
                   msg.sender === user._id
-                    ? "cursor-pointer flex flex-row-reverse items-start"
-                    : "cursor-pointer flex flex-row items-start"
+                    ? `my-2 cursor-pointer flex flex-row-reverse items-start ${
+                        msg.status === "sending" && "opacity-50"
+                      }`
+                    : "my-2 cursor-pointer flex flex-row items-start"
                 }
               >
                 <div className="w-8 h-8 rounded-full overflow-hidden mx-2">
-                  {/* <img
-                    src="./images/person-1.jpg"
-                    className="object-cover"
+                  <img
+                    src={
+                      msg.sender === user._id
+                        ? user.profile_img
+                        : chat.receiver.profile_img
+                    }
+                    className="object-cover h-8 w-8"
                     alt=""
-                  /> */}
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
+                  />
                 </div>
                 <div>
                   <div
@@ -74,7 +72,7 @@ export function ChatTemplate({ chat }) {
               {`Say hi to ${chat.receiver.name}`}
             </div>
           )}
-        </div>
+        </ScrollToBottom>
       </div>
 
       <ChatFooter />

@@ -1,5 +1,5 @@
 const Message = require("./models/Message");
-const User = require("../user/models/User");
+const Device = require("../user/models/Devices");
 
 // update Msg Status
 const updateMsgStatus = async (io, msg, status) => {
@@ -7,9 +7,12 @@ const updateMsgStatus = async (io, msg, status) => {
     let newMsg = await Message.findById(msg._id);
     newMsg.status = status;
     newMsg = await newMsg.save();
-    console.log(newMsg);
-    const user = await User.findById(msg.sender);
-    io.to(user.io_id).emit("msg_status_updated", { status, msg });
+    const senderDevices = await Device.find({ user: msg.sender });
+    if (senderDevices.length !== 0) {
+      senderDevices.forEach((device) => {
+        io.to(device.io_id).emit("msg_status_updated", { msg: newMsg });
+      });
+    }
   } catch (error) {
     console.log(error);
   }

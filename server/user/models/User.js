@@ -6,10 +6,26 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  profile_img: {
+    type: String,
+    default: "",
+  },
   email: {
     type: String,
     required: true,
     unique: true,
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  location: {
+    type: String,
+    default: "",
+  },
+  phone: {
+    type: String,
+    default: "",
   },
   password: {
     type: String,
@@ -22,10 +38,6 @@ const UserSchema = new Schema({
   login: {
     type: Boolean,
     default: false,
-  },
-  io_id: {
-    type: String,
-    default: "",
   },
 });
 

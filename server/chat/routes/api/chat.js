@@ -6,6 +6,7 @@ const { auth } = require("../../../middleware/auth");
 const Chat = require("../../models/Chat");
 const Message = require("../../models/Message");
 const User = require("../../../user/models/User");
+const Device = require("../../../user/models/Devices");
 
 // // @route   GET /api/v1/chat/?offset=0&limit=5
 // // @desc    Get a limited number of user chats
@@ -13,13 +14,11 @@ const User = require("../../../user/models/User");
 routes.get("/", auth, async (req, res, next) => {
   const { offset, limit } = req.query;
   const { user } = req.body;
-
-  // if ((!parseInt(offset) && parseInt(offset) !== 0) || !parseInt(limit)) {
-  //   return res.status(400).json({ message: "Bad query params" });
-  // }
+  if ((!parseInt(limit) && parseInt(limit) !== 0) || !parseInt(offset)) {
+    return res.status(400).json({ message: "Bad query params" });
+  }
   try {
     // search for existing user
-    // TODO :: Merge to a single query
     let chats = await Chat.find({
       $or: [{ receiver: user._id }, { sender: user._id }],
     }).sort({ updated_at: -1 });
@@ -40,6 +39,7 @@ routes.get("/", auth, async (req, res, next) => {
 
     res.status(200).json([...resualt]);
   } catch (error) {
+    console.log(error);
     next(error);
   }
 });
@@ -64,8 +64,23 @@ routes.post("/message", auth, async (req, res) => {
     const savedMessage = await newMsg.save();
     chat.updated_at = Date.now();
     await chat.save();
-    req.io.to(receiver.io_id).emit("message", savedMessage);
-    res.status(200).json(savedMessage);
+    // Update the message status to the sender user
+    const senderDevices = await Device.find({ user: user._id });
+    if (senderDevices.length !== 0) {
+      senderDevices.forEach((device) => {
+        req.io
+          .to(device.io_id)
+          .emit("msg_status_updated", { msg: savedMessage });
+      });
+    }
+    // send message to the receiver
+    const receiverDevices = await Device.find({ user: receiver._id });
+    if (receiverDevices.length !== 0) {
+      receiverDevices.forEach((device) => {
+        req.io.to(device.io_id).emit("receive_message", savedMessage);
+      });
+    }
+    res.status(203);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -111,19 +126,30 @@ routes.get("/receiver/:_id", auth, async (req, res) => {
 routes.get("/:_id", auth, async (req, res) => {
   const { _id } = req.params;
   const { user } = req.body;
+  let { offset, limit } = req.query;
+  limit = parseInt(limit);
+  offset = parseInt(offset);
+  if ((!limit && limit !== 0) || (!offset && offset !== 0)) {
+    return res.status(400).json({ message: "Bad query params" });
+  }
   try {
     let chat = await Chat.findById(_id);
     if (!chat) return res.status(404).json({ message: "no chats" });
-
+    // Set the Receiver
     if (String(chat.sender) === String(user._id)) {
       chat.receiver = await User.findById(chat.receiver);
     } else {
       chat.receiver = await User.findById(chat.sender);
     }
+    // Get the chat messages
+    let messages = await Message.find({ chat: chat._doc._id });
+    // .sort({ send_Date: -1 })
+    // .limit(limit)
+    // .skip(offset);
 
     let resualt = {
       ...chat._doc,
-      messages: await Message.find({ chat: chat._doc._id }),
+      messages: messages,
     };
     delete resualt.sender;
     return res.status(200).json(resualt);

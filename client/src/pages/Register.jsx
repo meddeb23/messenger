@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { useForm } from "../utility";
+import { useForm } from "../utility/utility";
 import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
 
@@ -94,6 +94,7 @@ export function Register() {
               className="w-44 bg-transparent outline-none ml-2 text-sm"
               onChange={(e) => setValues(e)}
               name="email"
+              autoComplete={false}
             />
           </div>
           <small className="text-gray-400 text-xs">

@@ -4,20 +4,11 @@ import { ChatCard } from "../components";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {
-  const { setChat, setChatList, chatList } = useContext(ChatContext);
+  const { setChat, setChatList, setReceiver, chatList } = useContext(
+    ChatContext
+  );
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
-
-  //   {
-  //     user: {
-  //       firstName: "Allen",
-  //       lastName: "walker",
-  //       status: "online",
-  //     },
-  //     messageBody: "He, can you call me now ?",
-  //     time: "18:56",
-  //   },
-  // ]);
 
   const [resualt, setResulat] = useState([]);
 
@@ -25,10 +16,18 @@ export function ChatHistory() {
   // const [offset, setOffset] = useState(0);
 
   const onLoadChatHistory = async () => {
+    const limit = 10;
+    const offset = 1;
     try {
-      const res = await axios.get("/api/v1/chat");
+      const res = await axios.get(
+        `/api/v1/chat?limit=${limit}&offset=${offset}`
+      );
       if (res.status === 200) {
         setChatList(res.data);
+        // set the first chat as active chat
+        if (res.data.length !== 0 && window.innerWidth >= 768) {
+          onLoadChatById(res.data[0]._id);
+        }
       }
     } catch (error) {
       console.log(error);
@@ -59,10 +58,15 @@ export function ChatHistory() {
     }
   };
   const onLoadChatById = async (_id) => {
+    const limit = 10;
+    const offset = 0;
     try {
-      const res = await axios.get(`/api/v1/chat/${_id}`);
+      const res = await axios.get(
+        `/api/v1/chat/${_id}?limit=${limit}&offset=${offset}`
+      );
       if (res.status === 200) {
         setChat(res.data);
+        setReceiver(res.data.receiver);
         setResulat([]);
       }
       setResulat([]);
@@ -76,24 +80,26 @@ export function ChatHistory() {
   }, []);
 
   return (
-    <div className="w-72 h-full flex-none">
+    <div className="mt-8 md:mt-0 w-full md:w-72 h-full flex-none">
       <div className="relative mx-2">
         <form
           onSubmit={(e) => onSearch(e)}
           className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3  rounded-md"
         >
-          <svg
-            className="w-5 flex-none text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <button type="submit" className="cursor-pointer">
+            <svg
+              className="w-5 flex-none text-gray-400"
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                clipRule="evenodd"
+              />
+            </svg>
+          </button>
           <input
             type="text"
             placeholder="Search..."

@@ -2,7 +2,7 @@ import Axios from "axios";
 import React, { useContext, useState } from "react";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
 
-import { useForm } from "../utility";
+import { useForm } from "../utility/utility";
 import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
 
