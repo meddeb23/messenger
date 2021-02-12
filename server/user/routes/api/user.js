@@ -210,6 +210,30 @@ routes.post("/search", auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/v1/user/suggestion
+// @desc    users suggestions
+// @access  privat
+routes.get("/suggestion", auth, async (req, res, next) => {
+  try {
+    const suggest_users = await User.find().limit(5);
+    if (suggest_users.length !== 0) {
+      const users = [];
+      for (const user of suggest_users) {
+        users.push({
+          _id: user._id,
+          name: user.name,
+          email: user.email,
+          profile_img: user.profile_img,
+        });
+      }
+      return res.status(200).json({ users });
+    }
+    res.status(200).json({ users: [{ name: "no suggestions" }] });
+  } catch (error) {
+    next(error);
+  }
+});
+
 // @route   GET /api/v1/user/:search_id
 // @desc    Get user by id
 // @access  privat

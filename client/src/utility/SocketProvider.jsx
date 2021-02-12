@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useContext } from "react";
 import io from "socket.io-client";
@@ -21,9 +22,20 @@ export default function SocketProvider({ user, children }) {
     // display the recent chat in the top of the chat history
     const newChatList = chatList.filter((item) => item._id !== msg.chat);
     const activeChat = chatList.find((item) => item._id === msg.chat);
-    activeChat.lastMsg = msg;
-    newChatList.unshift(activeChat);
-    setChatList(newChatList);
+    if (!activeChat) {
+      axios
+        .get(`/api/v1/chat?limit=0&offset=10`)
+        .then((res) => {
+          if (res.status === 200) {
+            setChatList(res.data);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      activeChat.lastMsg = msg;
+      newChatList.unshift(activeChat);
+      setChatList(newChatList);
+    }
   };
   const handleMessageStatusUpdate = (msg) => {
     // display the msg in the active chat
@@ -37,9 +49,20 @@ export default function SocketProvider({ user, children }) {
     // display the recent chat in the top of the chat history
     const newChatList = chatList.filter((item) => item._id !== msg.chat);
     const activeChat = chatList.find((item) => item._id === msg.chat);
-    activeChat.lastMsg = msg;
-    newChatList.unshift(activeChat);
-    setChatList(newChatList);
+    if (!activeChat) {
+      axios
+        .get(`/api/v1/chat?limit=0&offset=10`)
+        .then((res) => {
+          if (res.status === 200) {
+            setChatList(res.data);
+          }
+        })
+        .catch((err) => console.log(err));
+    } else {
+      activeChat.lastMsg = msg;
+      newChatList.unshift(activeChat);
+      setChatList(newChatList);
+    }
   };
   useEffect(() => {
     console.log("useEffect socket provider");

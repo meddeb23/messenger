@@ -12,7 +12,7 @@ export function ChatTemplate({ chat }) {
   };
 
   return (
-    <div className="flex flex-col absolute top-0 left-0 h-full w-full md:w-auto md:relative rounded-md bg-white border-none md:border-2 border-gray-200 flex-auto md:h-auto">
+    <div className="flex flex-col absolute z-40 md:z-20 top-0 left-0 h-full w-full md:w-auto md:relative rounded-md bg-white border-none md:border-2 border-gray-200 flex-auto md:h-auto">
       {chat.receiver && <ChatHeader receiver={chat.receiver} />}
 
       <div
