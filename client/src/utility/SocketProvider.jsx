@@ -6,7 +6,7 @@ import { ChatContext } from "../context";
 
 const SocketContext = React.createContext();
 
-const ENDPOINT = "http://localhost:5005";
+const ENDPOINT = "https://chat-mern-app.herokuapp.com/";
 
 export default function SocketProvider({ user, children }) {
   const [socket, setSocket] = useState();

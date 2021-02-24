@@ -9,8 +9,13 @@ const { errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
+// Set env variable
+require("dotenv").config({
+  path: path.join(process.cwd(), "/config/.env"),
+});
+
 // Mongosse database
-const db = require("./database/db");
+require("./database/db");
 const Device = require("./user/models/Devices");
 
 Device.deleteMany({})
@@ -23,15 +28,9 @@ Device.deleteMany({})
 const { socketAuth, disconnectUser } = require("./middleware/auth");
 const { updateMsgStatus } = require("./chat/socket_api");
 
-// Set env variable
-require("dotenv").config({
-  path: path.join(process.cwd(), "/config/.env"),
-});
-
 const dev = process.env.NODE_ENV === "developement";
-console.log(dev);
 // MIDDLEWARES
-app.use(helmet()); // Basic security
+// app.use(helmet()); // Basic security
 app.use(cors()); // cors middleware
 app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(bodyParser.json()); // parse application/json
@@ -41,11 +40,7 @@ if (dev) {
   const morgan = require("morgan");
   app.use(morgan("dev")); // Morgan
 }
-app.use("/static", express.static(path.join(__dirname, "public")));
-
-app.get("/", (req, res) => {
-  res.send("Hello World 😃");
-});
+app.use("/", express.static(path.join(__dirname, "public")));
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
@@ -70,6 +65,10 @@ app.use(function (req, res, next) {
 // Routes
 app.use("/api/v1/user", require("./user/routes/api/user"));
 app.use("/api/v1/chat", require("./chat/routes/api/chat"));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "public", "index.html"));
+});
 
 app.use(errorHandler); // Error handling Middleware
 

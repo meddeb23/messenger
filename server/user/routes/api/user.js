@@ -160,8 +160,7 @@ routes.post("/upload_pic", auth, async (req, res, next) => {
         file.name
       )
     );
-    user.profile_img = `/static/profile_images/${file.name}`;
-    console.log("update user");
+    user.profile_img = `/profile_images/${file.name}`;
     const newUser = await user.save();
     res.json({ user: newUser });
     // end file upload handler
