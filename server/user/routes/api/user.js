@@ -17,10 +17,12 @@ routes.post("/login", async (req, res, next) => {
   if (!email || !password)
     return res.status(400).json({ message: "All fields required" });
   try {
+    console.log(email, password);
     // search for existing user
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "User dose not exist" });
 
+    console.log("test");
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials" });
@@ -160,7 +162,7 @@ routes.post("/upload_pic", auth, async (req, res, next) => {
         file.name
       )
     );
-    user.profile_img = `/static/profile_images/${file.name}`;
+    user.profile_img = `/public/profile_images/${file.name}`;
     const newUser = await user.save();
     res.json({ user: newUser });
     // end file upload handler

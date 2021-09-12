@@ -94,7 +94,6 @@ export function Register() {
               className="w-44 bg-transparent outline-none ml-2 text-sm"
               onChange={(e) => setValues(e)}
               name="email"
-              autoComplete={false}
             />
           </div>
           <small className="text-gray-400 text-xs">

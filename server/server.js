@@ -25,10 +25,8 @@ const { updateMsgStatus } = require("./chat/socket_api");
 
 const dev = process.env.NODE_ENV === "developement";
 
-if (dev) {
-  const morgan = require("morgan");
-  app.use(morgan("dev")); // Morgan
-}
+const morgan = require("morgan");
+app.use(morgan("dev")); // Morgan
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
