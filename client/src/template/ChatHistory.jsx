@@ -76,7 +76,6 @@ export function ChatHistory() {
         `/api/v1/chat/${_id}?limit=${limit}&offset=${offset}`
       );
       if (res.status === 200) {
-        setChat(res.data);
         setReceiver(res.data.receiver);
         setResulat([]);
       }

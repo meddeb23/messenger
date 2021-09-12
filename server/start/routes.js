@@ -27,12 +27,13 @@ module.exports = (app) => {
       express.static(path.join(__dirname, "..", "..", "client", "build"))
     );
 
+  // Routes
+  app.use("/api/v1/user", user);
+  app.use("/api/v1/chat", chat);
+
   app.get("*", (req, res) => {
     res.sendFile(
       path.resolve(__dirname, "..", "..", "client", "build", "index.html")
     );
   });
-  // Routes
-  app.use("/api/v1/user", user);
-  app.use("/api/v1/chat", chat);
 };
