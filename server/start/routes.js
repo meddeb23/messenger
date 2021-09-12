@@ -21,9 +21,9 @@ module.exports = (app) => {
   app.use(errorHandler); // Error handling Middleware
 
   app.use("/", express.static(path.join(__dirname, "..", "public")));
-  //   app.get("*", (req, res) => {
-  //     res.sendFile(path.resolve(__dirname, "public", "index.html"));
-  //   });
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "public", "index.html"));
+  });
   // Routes
   app.use("/api/v1/user", user);
   app.use("/api/v1/chat", chat);
