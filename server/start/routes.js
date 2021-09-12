@@ -20,7 +20,13 @@ module.exports = (app) => {
   app.use(fileUploader()); // File uploader middleware
   app.use(errorHandler); // Error handling Middleware
 
-  app.use("/", express.static(path.join(__dirname, "..", "public")));
+  app.use("/static", express.static(path.join(__dirname, "..", "public")));
+  if (process.env.NODE_ENV !== "developement")
+    app.use(
+      "/",
+      express.static(path.join(__dirname, "..", "..", "client", "build"))
+    );
+
   app.get("*", (req, res) => {
     res.sendFile(
       path.resolve(__dirname, "..", "..", "client", "build", "index.html")
