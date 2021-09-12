@@ -14,8 +14,6 @@ export function ChatHistory() {
 
   const [resualt, setResulat] = useState([]);
   const [userSeggestions, setUserSuggestion] = useState([]);
-  // const limit = 10;
-  // const [offset, setOffset] = useState(0);
 
   const onLoadChatHistory = async () => {
     const limit = 10;
@@ -100,8 +98,8 @@ export function ChatHistory() {
     <>
       {searchBox && (
         <div
-          className="absolute top-0 left-0 z-40 h-full w-full"
-          style={{ background: "#00000033" }}
+          className="absolute  top-0 left-0 z-40 h-full w-full"
+          style={{ background: "#00000033", marginLeft: 0 }}
           onClick={() => {
             setSearchbox(false);
             setResulat([]);

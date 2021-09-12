@@ -52,7 +52,6 @@ const isAdmin = async (req, res, next) => {
 };
 // sokcet auth
 const socketAuth = async (io_id, _id) => {
-  debug("socket Auth");
   try {
     let user = await User.findById(_id);
     let connectionExist = await Device.findOne({ io_id });

@@ -32,9 +32,8 @@ if (dev) {
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-console.log("init socket");
 io.on("connect", (socket) => {
-  console.log(socket.handshake.query);
+  // console.log(socket.handshake.query);
   socketAuth(socket.id, socket.handshake.query.id);
   socket.on("update_msg_status", ({ msg, status }) => {
     updateMsgStatus(io, msg, status);
