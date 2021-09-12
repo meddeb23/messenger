@@ -1,7 +1,7 @@
 const User = require("../user/models/User");
 const jwt = require("jsonwebtoken");
 const Device = require("../user/models/Devices");
-
+const debug = require("debug")("app:socket");
 const JWT_SECRET = process.env.JWT_SECRET || "CKJ$%sGKGF$KJJfHFL";
 
 const auth = async (req, res, next) => {
@@ -52,6 +52,7 @@ const isAdmin = async (req, res, next) => {
 };
 // sokcet auth
 const socketAuth = async (io_id, _id) => {
+  debug("socket Auth");
   try {
     let user = await User.findById(_id);
     let connectionExist = await Device.findOne({ io_id });
@@ -61,9 +62,7 @@ const socketAuth = async (io_id, _id) => {
         io_id: io_id,
       });
       const savedConnection = await newConnection.save();
-      console.log(
-        `${user.name} is online with socket id : ${savedConnection.io_id}`
-      );
+      debug(`${user.name} is online with socket id : ${savedConnection.io_id}`);
     }
     user.login = true;
     await user.save();

@@ -1,11 +1,7 @@
 const express = require("express");
-const helmet = require("helmet");
-const cors = require("cors");
+const debug = require("debug")("app");
+
 const path = require("path");
-const fileUploader = require("express-fileupload");
-const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
-const { errorHandler } = require("./middleware/errorHandler");
 
 const app = express();
 
@@ -13,14 +9,13 @@ const app = express();
 require("dotenv").config({
   path: path.join(process.cwd(), "/config/.env"),
 });
-
 // Mongosse database
 require("./database/db");
-const Device = require("./user/models/Devices");
 
+const Device = require("./user/models/Devices");
 Device.deleteMany({})
   .then((_) => {
-    console.log("Cleaning existing Conection ...");
+    debug("Cleaning existing Conection ...");
   })
   .catch((err) => console.log(err));
 
@@ -29,24 +24,17 @@ const { socketAuth, disconnectUser } = require("./middleware/auth");
 const { updateMsgStatus } = require("./chat/socket_api");
 
 const dev = process.env.NODE_ENV === "developement";
-// MIDDLEWARES
-// app.use(helmet()); // Basic security
-app.use(cors()); // cors middleware
-app.use(bodyParser.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
-app.use(bodyParser.json()); // parse application/json
-app.use(cookieParser()); // cookie parser middleware
-app.use(fileUploader()); // File uploader middleware
+
 if (dev) {
   const morgan = require("morgan");
   app.use(morgan("dev")); // Morgan
 }
-app.use("/", express.static(path.join(__dirname, "public")));
 
 const server = require("http").Server(app);
 const io = require("socket.io")(server);
-
+console.log("init socket");
 io.on("connect", (socket) => {
-  // console.log(socket.handshake.query);
+  console.log(socket.handshake.query);
   socketAuth(socket.id, socket.handshake.query.id);
   socket.on("update_msg_status", ({ msg, status }) => {
     updateMsgStatus(io, msg, status);
@@ -62,18 +50,10 @@ app.use(function (req, res, next) {
   next();
 });
 
-// Routes
-app.use("/api/v1/user", require("./user/routes/api/user"));
-app.use("/api/v1/chat", require("./chat/routes/api/chat"));
-
-app.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "public", "index.html"));
-});
-
-app.use(errorHandler); // Error handling Middleware
+require("./start/routes")(app);
 
 const PORT = process.env.PORT || 5000;
 
 server.listen(PORT, () =>
-  console.log(`Server is running in ${process.env.NODE_ENV} on Port ${PORT}`)
+  debug(`Server is running in ${process.env.NODE_ENV} on Port ${PORT}`)
 );

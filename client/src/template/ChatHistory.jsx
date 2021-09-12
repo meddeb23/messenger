@@ -1,12 +1,13 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { ChatCard } from "../components";
+import SearchBar from "../components/SearchBar";
+import UserSeggestion from "../components/UserSegestion";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {
-  const { setChat, setChatList, setReceiver, chatList } = useContext(
-    ChatContext
-  );
+  const { setChat, setChatList, setReceiver, chatList } =
+    useContext(ChatContext);
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [searchBox, setSearchbox] = useState(false);
@@ -24,6 +25,7 @@ export function ChatHistory() {
         `/api/v1/chat?limit=${limit}&offset=${offset}`
       );
       if (res.status === 200) {
+        console.log(res.data);
         setChatList(res.data);
         // set the first chat as active chat
         if (res.data.length !== 0 && window.innerWidth >= 768) {
@@ -89,6 +91,9 @@ export function ChatHistory() {
   useEffect(() => {
     onLoadChatHistory();
     onLoadUserSeggestions();
+    return () => {
+      console.log("add clean up function");
+    };
   }, []);
 
   return (
@@ -97,7 +102,11 @@ export function ChatHistory() {
         <div
           className="absolute top-0 left-0 z-40 h-full w-full"
           style={{ background: "#00000033" }}
-          onClick={() => setSearchbox(false)}
+          onClick={() => {
+            setSearchbox(false);
+            setResulat([]);
+            setSearch("");
+          }}
         ></div>
       )}
       <div
@@ -105,32 +114,12 @@ export function ChatHistory() {
         style={{ height: "calc(100vh - 2rem)" }}
       >
         <div className="relative mx-2 z-40">
-          <form
-            onSubmit={(e) => onSearch(e)}
-            className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3  rounded-md"
-          >
-            <button type="submit" className="cursor-pointer">
-              <svg
-                className="w-5 flex-none text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="bg-transparent outline-none ml-2 text-sm w-full"
-              onChange={(e) => setSearch(e.target.value)}
-              onFocus={() => setSearchbox(true)}
-            />
-          </form>
+          <SearchBar
+            defaultValue={search}
+            setSearch={setSearch}
+            onSearch={onSearch}
+            setSearchbox={setSearchbox}
+          />
           {resualt.length !== 0 && (
             <ul
               className=" bg-white border-2 border-gray-200  rounded-md shadow-lg absolute w-full mt-1 overflow-y-auto"
@@ -164,38 +153,17 @@ export function ChatHistory() {
             {chatList.length !== 0 &&
               chatList.map((item) => (
                 <ChatCard
-                  key={item._id}
+                  key={`chatHistory${item._id}`}
                   data={item}
                   loadChat={onLoadChatById}
                   user={user}
                 />
               ))}
           </div>
-          {userSeggestions.length !== 0 && (
-            <div>
-              <h1 className="font-bold mb-4 text-gray-900 text-sm pb-1 border-b-2 border-gray-600">
-                suggestions
-              </h1>
-              {userSeggestions.map((item) => (
-                <div
-                  onClick={() => onLoadChatByUser(item._id)}
-                  className="flex flex-row items-center cursor-pointer hover:bg-gray-200 p-2 transition-colors space-x-2 my-1"
-                >
-                  <div className="w-8 h-8 rounded-full overflow-hidden">
-                    <img
-                      src={item.profile_img}
-                      alt={`${item.name} profile picture`}
-                      className="w-8 h-8 object-cover"
-                    />
-                  </div>
-                  <div>
-                    <div className="text-gray-600">{item.name}</div>
-                    <div className="text-sm text-gray-400">{item.email}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <UserSeggestion
+            userSeggestions={userSeggestions}
+            onLoadChatByUser={onLoadChatById}
+          />
         </section>
       </div>
     </>

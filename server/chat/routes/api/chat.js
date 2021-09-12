@@ -8,28 +8,37 @@ const Message = require("../../models/Message");
 const User = require("../../../user/models/User");
 const Device = require("../../../user/models/Devices");
 
+const checkPaginationQuery = (limit, offset) => {
+  return !parseInt(limit) || parseInt(limit) === 0 || parseInt(offset) == NaN;
+};
+
+const getUser = async (query) => {
+  return await User.findById(query).select("name profile_img email login");
+};
+
 // // @route   GET /api/v1/chat/?offset=0&limit=5
 // // @desc    Get a limited number of user chats
 // // @access  Privat
 routes.get("/", auth, async (req, res, next) => {
   const { offset, limit } = req.query;
   const { user } = req.body;
-  if ((!parseInt(limit) && parseInt(limit) !== 0) || !parseInt(offset)) {
+  if (checkPaginationQuery(limit, offset, res))
     return res.status(400).json({ message: "Bad query params" });
-  }
+
   try {
     // search for existing user
     let chats = await Chat.find({
       $or: [{ receiver: user._id }, { sender: user._id }],
-    }).sort({ updated_at: -1 });
+    })
+      .sort({ updated_at: -1 })
+      .select("-deleted");
     let resualt = [];
     for (let chat of chats) {
       let item = { ...chat._doc };
-      if (String(chat.sender) === String(user._id)) {
-        item.receiver = await User.findById(chat.receiver);
-      } else {
-        item.receiver = await User.findById(chat.sender);
-      }
+      if (String(chat.sender) === String(user._id))
+        item.receiver = await getUser(chat.receiver);
+      else item.receiver = await getUser(chat.sender);
+
       item.lastMsg = await Message.findOne({ chat: item._id }).sort({
         send_Date: -1,
       });
@@ -129,7 +138,7 @@ routes.get("/:_id", auth, async (req, res) => {
   let { offset, limit } = req.query;
   limit = parseInt(limit);
   offset = parseInt(offset);
-  if ((!limit && limit !== 0) || (!offset && offset !== 0)) {
+  if (checkPaginationQuery(limit, offset)) {
     return res.status(400).json({ message: "Bad query params" });
   }
   try {
