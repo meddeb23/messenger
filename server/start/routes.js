@@ -1,5 +1,6 @@
 const express = require("express");
 const path = require("path");
+const morgan = require("morgan");
 
 const helmet = require("helmet");
 const cors = require("cors");
@@ -10,7 +11,7 @@ const { errorHandler } = require("../middleware/errorHandler");
 const user = require("../user/routes/api/user");
 const chat = require("../chat/routes/api/chat");
 
-module.exports = (app) => {
+module.exports = (app, io) => {
   // MIDDLEWARES
   // app.use(helmet()); // Basic security
   app.use(cors()); // cors middleware
@@ -19,7 +20,12 @@ module.exports = (app) => {
   app.use(cookieParser()); // cookie parser middleware
   app.use(fileUploader()); // File uploader middleware
   app.use(errorHandler); // Error handling Middleware
-
+  app.use(morgan("dev")); // Morgan
+  // Assign socket object to every request
+  app.use(function (req, res, next) {
+    req.io = io;
+    next();
+  });
   app.use("/public", express.static(path.join(__dirname, "..", "public")));
   if (process.env.NODE_ENV !== "developement")
     app.use(
