@@ -31,7 +31,7 @@ export function ChatTemplate({ chat }) {
                 className={
                   msg.sender === user._id
                     ? `my-2 cursor-pointer flex flex-row-reverse items-start ${
-                        msg.status === "sending" && "opacity-50"
+                        msg.status === "sending" && "text-red-500"
                       }`
                     : "my-2 cursor-pointer flex flex-row items-start"
                 }
