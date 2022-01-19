@@ -2,7 +2,8 @@ import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
 import { ChatCard } from "../components";
 import SearchBar from "../components/SearchBar";
-import UserSeggestion from "../components/UserSegestion";
+import UserSearchResultCart from "../components/UserSearchResultCart";
+import UserSeggestion from "../components/UserSearchResultCart";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {
@@ -10,7 +11,7 @@ export function ChatHistory() {
     useContext(ChatContext);
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
-  const [searchBox, setSearchbox] = useState(false);
+  const [searchBox, setSearchbox] = useState(true);
 
   const [resualt, setResulat] = useState([]);
   const [userSeggestions, setUserSuggestion] = useState([]);
@@ -50,6 +51,7 @@ export function ChatHistory() {
     try {
       const res = await axios.post("/api/v1/user/search", { search });
       if (res.status === 200) {
+        console.log(res.data);
         setResulat(res.data.users);
       }
     } catch (error) {
@@ -119,24 +121,39 @@ export function ChatHistory() {
             onSearch={onSearch}
             setSearchbox={setSearchbox}
           />
-          {resualt.length !== 0 && (
+          {searchBox && (
             <ul
               className=" bg-white border-2 border-gray-200  rounded-md shadow-lg absolute w-full mt-1 overflow-y-auto"
               style={{ maxHeight: "200px" }}
             >
-              {resualt.map((item) => (
-                <li
-                  key={`search_user_${item._id}`}
-                  className="cursor-pointer hover:bg-gray-100 py-2 px-3 "
-                  onClick={() => {
-                    setSearchbox(false);
-                    onLoadChatByUser(item._id);
-                  }}
-                >
-                  <div className="text-gray-600">{item.name}</div>
-                  <div className="text-sm text-gray-400">{item.email}</div>
-                </li>
-              ))}
+              {resualt.length !== 0
+                ? resualt.map((item) => (
+                    <UserSearchResultCart
+                      key={`searchResult${item._id}`}
+                      item={item}
+                      handler={(_id) => {
+                        setSearchbox(false);
+                        onLoadChatByUser(item._id);
+                      }}
+                    />
+                  ))
+                : userSeggestions && (
+                    <>
+                      <li className="font-bold text-gray-900 text-sm pb-1 border-b-2 border-gray-600 py-2 px-3 ">
+                        <div className="text-gray-600">suggestions</div>
+                      </li>
+                      {userSeggestions.map((item) => (
+                        <UserSearchResultCart
+                          key={`userSuggestion${item._id}`}
+                          item={item}
+                          handler={(_id) => {
+                            setSearchbox(false);
+                            onLoadChatByUser(item._id);
+                          }}
+                        />
+                      ))}
+                    </>
+                  )}
             </ul>
           )}
         </div>
@@ -159,10 +176,6 @@ export function ChatHistory() {
                 />
               ))}
           </div>
-          <UserSeggestion
-            userSeggestions={userSeggestions}
-            onLoadChatByUser={onLoadChatById}
-          />
         </section>
       </div>
     </>

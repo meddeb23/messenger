@@ -5,6 +5,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 const { auth } = require("../../../middleware/auth");
+const { getUserPages } = require("../../utilities/utilities");
 const User = require("../../models/User");
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -192,18 +193,8 @@ routes.post("/search", auth, async (req, res) => {
   const { search } = req.body;
   const regex = search ? new RegExp(search) : null;
   try {
-    const find_users = await User.find({ name: regex });
-    if (find_users.length !== 0) {
-      const users = [];
-      for (const user of find_users) {
-        users.push({
-          _id: user._id,
-          name: user.name,
-          email: user.email,
-        });
-      }
-      return res.status(200).json({ users });
-    }
+    const users = await getUserPages({ name: regex });
+    if (users.length !== 0) return res.status(200).json({ users });
     res.status(200).json({ users: [{ name: "no resualt" }] });
   } catch (error) {
     res.status(500).json({ message: "Error finding Users" });
