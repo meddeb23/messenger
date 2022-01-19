@@ -3,7 +3,6 @@ import React, { useContext, useState, useEffect } from "react";
 import { ChatCard } from "../components";
 import SearchBar from "../components/SearchBar";
 import UserSearchResultCart from "../components/UserSearchResultCart";
-import UserSeggestion from "../components/UserSearchResultCart";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {

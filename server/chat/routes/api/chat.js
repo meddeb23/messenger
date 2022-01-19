@@ -8,13 +8,8 @@ const Message = require("../../models/Message");
 const User = require("../../../user/models/User");
 const Device = require("../../../user/models/Devices");
 
-const checkPaginationQuery = (limit, offset) => {
-  return !parseInt(limit) || parseInt(limit) === 0 || parseInt(offset) == NaN;
-};
-
-const getUser = async (query) => {
-  return await User.findById(query).select("name profile_img email login");
-};
+const { getUser } = require("../../utilities/userUtilities");
+const { checkPaginationQuery } = require("../../utilities/validation");
 
 // // @route   GET /api/v1/chat/?offset=0&limit=5
 // // @desc    Get a limited number of user chats
@@ -25,32 +20,27 @@ routes.get("/", auth, async (req, res, next) => {
   if (checkPaginationQuery(limit, offset, res))
     return res.status(400).json({ message: "Bad query params" });
 
-  try {
-    // search for existing user
-    let chats = await Chat.find({
-      $or: [{ receiver: user._id }, { sender: user._id }],
-    })
-      .sort({ updated_at: -1 })
-      .select("-deleted");
-    let resualt = [];
-    for (let chat of chats) {
-      let item = { ...chat._doc };
-      if (String(chat.sender) === String(user._id))
-        item.receiver = await getUser(chat.receiver);
-      else item.receiver = await getUser(chat.sender);
+  // search for existing user
+  let chats = await Chat.find({
+    $or: [{ receiver: user._id }, { sender: user._id }],
+  })
+    .sort({ updated_at: -1 })
+    .select("-deleted");
+  let resualt = [];
+  for (let chat of chats) {
+    let item = { ...chat._doc };
+    if (String(chat.sender) === String(user._id))
+      item.receiver = await getUser(chat.receiver);
+    else item.receiver = await getUser(chat.sender);
 
-      item.lastMsg = await Message.findOne({ chat: item._id }).sort({
-        send_Date: -1,
-      });
-      delete item.sender;
-      resualt.push(item);
-    }
-
-    res.status(200).json([...resualt]);
-  } catch (error) {
-    console.log(error);
-    next(error);
+    item.lastMsg = await Message.findOne({ chat: item._id }).sort({
+      send_Date: -1,
+    });
+    delete item.sender;
+    resualt.push(item);
   }
+
+  res.status(200).json([...resualt]);
 });
 
 // // @route   POST /api/v1/chat/message

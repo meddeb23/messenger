@@ -19,7 +19,6 @@ module.exports = (app, io) => {
   app.use(express.json()); // parse application/json
   app.use(cookieParser()); // cookie parser middleware
   app.use(fileUploader()); // File uploader middleware
-  app.use(errorHandler); // Error handling Middleware
   app.use(morgan("dev")); // Morgan
   // Assign socket object to every request
   app.use(function (req, res, next) {
@@ -36,10 +35,13 @@ module.exports = (app, io) => {
   // Routes
   app.use("/api/v1/user", user);
   app.use("/api/v1/chat", chat);
-
+  app.get("/err", (req, res) => {
+    throw new Error("break");
+  });
   app.get("*", (req, res) => {
     res.sendFile(
       path.resolve(__dirname, "..", "..", "client", "build", "index.html")
     );
   });
+  app.use(errorHandler); // Error handling Middleware
 };

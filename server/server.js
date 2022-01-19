@@ -1,3 +1,4 @@
+require("express-async-errors");
 const express = require("express");
 const debug = require("debug")("app:startup");
 const path = require("path");
