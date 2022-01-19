@@ -11,7 +11,7 @@ export function ChatHistory() {
     useContext(ChatContext);
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
-  const [searchBox, setSearchbox] = useState(true);
+  const [searchBox, setSearchbox] = useState(false);
 
   const [resualt, setResulat] = useState([]);
   const [userSeggestions, setUserSuggestion] = useState([]);
