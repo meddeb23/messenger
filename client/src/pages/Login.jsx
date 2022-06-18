@@ -7,7 +7,7 @@ import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
 
 export function Login() {
-  const { setIsLoggedin, setUser, setIsAdmin } = useContext(UserContext);
+  const { setIsLoggedin, setUser } = useContext(UserContext);
   const [values, setValues] = useForm({ email: "", password: "" });
   const [showPwd, setShowPwd] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +22,6 @@ export function Login() {
     e.preventDefault();
     try {
       setIsFetching(true);
-      // Headers
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -33,16 +32,13 @@ export function Login() {
       if (res.status === 200 && res.data.user) {
         setUser(res.data.user);
         setIsLoggedin(true);
-        // setIsAdmin(res.user.isAdmin)
         history.replace(from);
-      }
-      setIsFetching(false);
+      } else setIsFetching(false);
     } catch (error) {
       // console.log(error.response);
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message);
       }
-      setIsFetching(false);
     }
   };
 
