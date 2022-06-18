@@ -1,6 +1,7 @@
 const User = require("../user/models/User");
 const jwt = require("jsonwebtoken");
 const Device = require("../user/models/Devices");
+const httpError = require("../chat/utilities/customError");
 const debug = require("debug")("app:socket");
 const JWT_SECRET = process.env.JWT_SECRET || "CKJ$%sGKGF$KJJfHFL";
 
@@ -8,26 +9,26 @@ const auth = async (req, res, next) => {
   const { token } = req.cookies;
   if (token) {
     const decode = jwt.verify(token, JWT_SECRET);
-    if (!decode) throw new Error("Access Deneied");
+    if (!decode) throw new httpError("Access Deneied", 401);
     const user = await User.findById(decode._id);
-    if (!user) throw new Error("Access Deneied");
+    if (!user) throw new httpError("Access Deneied", 401);
     req.body = {
       ...req.body,
       user,
     };
     next();
   } else {
-    throw new Error("Access Deneied");
+    throw new httpError("Access Deneied", 401);
   }
 };
 const isAdmin = async (req, res, next) => {
   const { token } = req.cookies;
   if (token) {
     const decode = jwt.verify(token, JWT_SECRET);
-    if (!decode) throw new Error("Access Deneied");
+    if (!decode) throw new httpError("Access Deneied", 401);
 
     const user = await User.findById(decode._id);
-    if (!user) throw new Error("Access Deneied");
+    if (!user) throw new httpError("Access Deneied", 401);
 
     if (user.isAdmin) {
       req.body = {
@@ -36,10 +37,10 @@ const isAdmin = async (req, res, next) => {
       };
       next();
     } else {
-      throw new Error("Access Forbidden");
+      throw new httpError("Access Forbidden");
     }
   } else {
-    throw new Error("Access Deneied");
+    throw new httpError("Access Deneied", 401);
   }
 };
 // sokcet auth

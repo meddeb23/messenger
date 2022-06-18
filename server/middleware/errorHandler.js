@@ -1,6 +1,6 @@
 exports.errorHandler = (error, req, res, next) => {
-  if (error.status) {
-    res.status(error.status);
+  if (error.statusCode) {
+    res.status(error.statusCode);
   } else {
     res.status(500);
   }

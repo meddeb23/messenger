@@ -8,29 +8,27 @@ const Message = require("../../models/Message");
 const User = require("../../../user/models/User");
 const Device = require("../../../user/models/Devices");
 
-const { getUser } = require("../../utilities/userUtilities");
-const { checkPaginationQuery } = require("../../utilities/validation");
-const {
-  getChatPages,
-  getChatById,
-  getMsgPages,
-} = require("../../utilities/chatUtilities");
+const { normaliseChats } = require("../../utilities/validation");
+const chatList = require("../../utilities/chatUtilities");
 
 // // @route   GET /api/v1/chat/?page=0
 // // @desc    Get a limited number of user chats
 // // @access  Privat
-routes.get("/", auth, async (req, res, next) => {
+routes.get("/", auth, async (req, res) => {
   const { page } = req.query;
   const { user } = req.body;
   // search for existing user
-  let chats = await getChatPages(
+  let chats = await chatList.getChatPages(
     { $or: [{ receiver: user._id }, { sender: user._id }] },
     page || 0
   );
   for (let chat of chats) {
+    chat = normaliseChats(chat, user._id);
     chat.lastMsg = await Message.findOne({ chat: chat._id }).sort({
       send_Date: -1,
     });
+
+    delete chat.sender;
   }
   res.status(200).json(chats);
 });
@@ -104,10 +102,10 @@ routes.get("/receiver/:_id", auth, async (req, res) => {
 routes.get("/:_id", auth, async (req, res) => {
   const { _id } = req.params;
   let { page } = req.query;
-
-  let chat = await getChatById(_id);
+  const { user } = req.body;
+  let chat = normaliseChats(await chatList.getChatById(_id), user._id);
   if (!chat) return res.status(404).json({ message: "no chats" });
-  let messages = await getMsgPages({ chat: chat._id }, page || 0);
+  let messages = await chatList.getMsgPages({ chat: chat._id }, page || 0);
 
   return res.status(200).json({
     ...chat,
