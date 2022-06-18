@@ -10,7 +10,7 @@ export default function UserSearchResultCart({ item, handler }) {
         <div className="w-10 h-10 rounded-full overflow-hidden">
           <img
             src={item.profile_img}
-            alt={`${item.name} profile picture`}
+            alt={`${item.name} profile`}
             className="w-10 h-10 object-cover"
           />
         </div>

@@ -21,7 +21,7 @@ module.exports = (app, io) => {
   app.use(fileUploader()); // File uploader middleware
   app.use(morgan("dev")); // Morgan
   // Assign socket object to every request
-  app.use(function (req, res, next) {
+  app.use((req, res, next) => {
     req.io = io;
     next();
   });
@@ -38,6 +38,7 @@ module.exports = (app, io) => {
   app.get("/err", (req, res) => {
     throw new Error("break");
   });
+
   app.get("*", (req, res) => {
     res.sendFile(
       path.resolve(__dirname, "..", "..", "client", "build", "index.html")

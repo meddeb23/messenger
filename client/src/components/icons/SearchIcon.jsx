@@ -1,9 +1,9 @@
 import React from "react";
 
-export default function SearchIcon({ style }) {
+export default function SearchIcon({ styleClasses }) {
   return (
     <svg
-      className={style}
+      className={styleClasses}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 20 20"
       fill="currentColor"

@@ -1,13 +1,15 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useContext } from "react";
 import io from "socket.io-client";
 import { ChatContext } from "../context";
-
+import notiSound from "../assets/sounds/notification_sound.mp3";
 const SocketContext = React.createContext();
 
-const ENDPOINT = "https://chat-mern-app.herokuapp.com/";
-// const ENDPOINT = "http://192.168.1.15:5005/";
+const ENDPOINT =
+  process.env.NODE_ENV === "development"
+    ? process.env.REACT_APP_ENDPOINT
+    : process.env.REACT_APP_PROD_ENDPOINT;
 
 export default function SocketProvider({ user, children }) {
   const [socket, setSocket] = useState();
@@ -81,6 +83,7 @@ export default function SocketProvider({ user, children }) {
     if (socket == null) return;
     socket.on("receive_message", (msg) => {
       console.log("receiving a message...");
+      audioPlayer.current.play();
       addMessageToChatList(msg);
       addMessageToActiveChat(msg);
       socket.emit("update_msg_status", { msg, status: "delivered" });
@@ -90,14 +93,17 @@ export default function SocketProvider({ user, children }) {
       console.log(msg);
       handleMessageStatusUpdate(msg);
     });
-
     return () => {
       socket.off("receive_message");
       socket.off("msg_status_updated");
     };
   }, [chat, chatList]);
 
+  const audioPlayer = useRef(null);
   return (
-    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
+    <SocketContext.Provider value={socket}>
+      <audio ref={audioPlayer} src={notiSound} />
+      {children}
+    </SocketContext.Provider>
   );
 }

@@ -14,17 +14,13 @@ export function ChatHistory() {
 
   const [resualt, setResulat] = useState([]);
   const [userSeggestions, setUserSuggestion] = useState([]);
-
+  const [chatPage, setChatPage] = useState(0);
   const onLoadChatHistory = async () => {
-    const limit = 10;
-    const offset = 1;
     try {
-      const res = await axios.get(
-        `/api/v1/chat?limit=${limit}&offset=${offset}`
-      );
+      const res = await axios.get(`/api/v1/chat?page=${chatPage}`);
       if (res.status === 200) {
-        console.log(res.data);
         setChatList(res.data);
+        setChatPage((value) => value + 1);
         // set the first chat as active chat
         if (res.data.length !== 0 && window.innerWidth >= 768) {
           onLoadChatById(res.data[0]._id);
@@ -70,14 +66,9 @@ export function ChatHistory() {
     }
   };
   const onLoadChatById = async (_id) => {
-    const limit = 10;
-    const offset = 0;
     try {
-      const res = await axios.get(
-        `/api/v1/chat/${_id}?limit=${limit}&offset=${offset}`
-      );
+      const res = await axios.get(`/api/v1/chat/${_id}`);
       if (res.status === 200) {
-        console.log(res.data);
         setChat(res.data);
         setReceiver(res.data.receiver);
         setResulat([]);

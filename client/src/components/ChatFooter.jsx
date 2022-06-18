@@ -4,7 +4,7 @@ import { ChatContext, UserContext } from "../context";
 
 export function ChatFooter() {
   const [msg, setMsg] = useState("");
-  const { chat, setChat, setChatList, chatList } = useContext(ChatContext);
+  const { chat, setChat } = useContext(ChatContext);
   const { user } = useContext(UserContext);
   const onSendMsg = async (e) => {
     e.preventDefault();
