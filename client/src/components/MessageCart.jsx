@@ -40,7 +40,7 @@ export default function MessageCart({ msg, user, receiver }) {
                 : "text-xs text-gray-500 pt-2"
             }
           >
-            {timeFormater(msg.send_Date)}
+            {timeFormater(msg.send_Date)} {msg.status}
           </div>
         )}
       </div>

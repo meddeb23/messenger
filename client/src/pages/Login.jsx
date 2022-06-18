@@ -1,5 +1,5 @@
 import Axios from "axios";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { NavLink, useHistory, useLocation } from "react-router-dom";
 
 import { useForm } from "../utility/utility";
@@ -7,6 +7,7 @@ import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
 
 export function Login() {
+  const [isRedirecting, setisRedirecting] = useState(true);
   const { setIsLoggedin, setUser } = useContext(UserContext);
   const [values, setValues] = useForm({ email: "", password: "" });
   const [showPwd, setShowPwd] = useState(false);
@@ -17,6 +18,21 @@ export function Login() {
   let location = useLocation();
 
   let { from } = location.state || { from: { pathname: "/messages" } };
+
+  useEffect(() => {
+    console.log("one time thing");
+    Axios.get("/api/v1/user")
+      .then((res) => {
+        if (res.status === 200) {
+          setUser(res.data.user);
+          history.replace(from);
+        }
+      })
+      .catch((error) => {
+        setisRedirecting(false);
+        console.log(error);
+      });
+  }, []);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
@@ -38,11 +54,13 @@ export function Login() {
       // console.log(error.response);
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message);
+        setIsFetching(false);
       }
     }
   };
-
-  return (
+  return isRedirecting ? (
+    <></>
+  ) : (
     <div className="mt-4 mx-auto flex justify-center items-center text-gray-600">
       <div className="mx-8">
         <h1 className="font-bold text-4xl ml-4">Login</h1>

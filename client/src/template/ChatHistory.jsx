@@ -6,15 +6,16 @@ import UserSearchResultCart from "../components/UserSearchResultCart";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {
-  const { setChat, setChatList, setReceiver, chatList } =
+  const { setChat, setChatList, setReceiver, chatList, chat } =
     useContext(ChatContext);
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [searchBox, setSearchbox] = useState(false);
-
+  const [countNewMessages, setCountNewMessages] = useState(0);
   const [resualt, setResulat] = useState([]);
   const [userSeggestions, setUserSuggestion] = useState([]);
   const [chatPage, setChatPage] = useState(0);
+
   const onLoadChatHistory = async () => {
     try {
       const res = await axios.get(`/api/v1/chat?page=${chatPage}`);
@@ -79,12 +80,23 @@ export function ChatHistory() {
     }
   };
 
+  const getCountNewMessages = () => {
+    let counter = 0;
+    chatList.forEach((chat) => {
+      if (chat.lastMsg.status !== "seen") counter++;
+    });
+    return counter;
+  };
+
+  useEffect(() => {
+    setCountNewMessages(getCountNewMessages());
+  }, [chatList]);
+
   useEffect(() => {
     onLoadChatHistory();
     onLoadUserSeggestions();
-    return () => {
-      console.log("add clean up function");
-    };
+
+    return () => {};
   }, []);
 
   return (
@@ -150,15 +162,17 @@ export function ChatHistory() {
         <section className="pl-2 pt-4">
           <div className="flex flex-row items-center mb-4 space-x-3">
             <h2 className="font-bold text-3xl">Inbox</h2>
-            <div className="text-xs border text-red-400 border-red-400 bg-red-100 rounded-full px-2 py-1 font-bold">
-              4 new
-            </div>
+            {countNewMessages !== 0 && (
+              <div className="text-xs border text-red-400 border-red-400 bg-red-100 rounded-full px-2 py-1 font-bold">
+                {countNewMessages} new
+              </div>
+            )}
           </div>
-          {user && <div className="m-4">{user.name}</div>}
           <div>
             {chatList.length !== 0 &&
               chatList.map((item) => (
                 <ChatCard
+                  isActive={chat && chat._id == item._id}
                   key={`chatHistory${item._id}`}
                   data={item}
                   loadChat={onLoadChatById}

@@ -4,6 +4,7 @@ const Device = require("../user/models/Devices");
 // update Msg Status
 const updateMsgStatus = async (io, msg, status) => {
   try {
+    console.log("updating status to ", status);
     let newMsg = await Message.findById(msg._id);
     newMsg.status = status;
     newMsg = await newMsg.save();

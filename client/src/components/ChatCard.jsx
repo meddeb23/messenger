@@ -1,13 +1,15 @@
 import React from "react";
 
-export function ChatCard({ user, data, loadChat }) {
+export function ChatCard({ user, data, loadChat, isActive }) {
   const timeFormater = (time) => {
     const date = new Date(time);
     return `${date.getHours()}:${date.getMinutes()}`;
   };
   return (
     <div
-      className="bg-white rounded-lg p-2 my-2 cursor-pointer"
+      className={`${
+        isActive ? "bg-blue-700" : "bg-white"
+      }  rounded-lg p-2 my-2 cursor-pointer transition-colors`}
       onClick={() => loadChat(data._id)}
     >
       <div className="flex items-center justify-between">
@@ -25,18 +27,30 @@ export function ChatCard({ user, data, loadChat }) {
             />
           </div>
           <div>
-            <div className="font-bold text-gray-600">{data.receiver.name}</div>
-            <div className="text-xs text-gray-400">online</div>
+            <div
+              className={`${
+                isActive ? "text-white" : "text-gray-600"
+              } font-bold `}
+            >
+              {data.receiver.name}
+            </div>
+            <div
+              className={`${isActive ? "text-white" : "text-gray-400"} text-xs`}
+            >
+              {data.receiver.login ? "online" : "offline"}
+            </div>
           </div>
         </div>
         {data.lastMsg && (
-          <div className="text-xs text-gray-400">
+          <div
+            className={`${isActive ? "text-white" : "text-gray-400"} text-xs`}
+          >
             {timeFormater(data.lastMsg.send_Date)}
           </div>
         )}
       </div>
       <div className="flex flex-row items-start justify-between px-4 py-2">
-        <div className="text-xs text-gray-500 ">
+        <div className={`${isActive ? "text-white" : "text-gray-500"} text-xs`}>
           {data.lastMsg
             ? data.lastMsg.sender === user._id
               ? `You: ${data.lastMsg.body}`

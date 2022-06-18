@@ -17,6 +17,7 @@ const MessageSchema = new Schema({
   },
   status: {
     type: String,
+    enum: ["send", "delivered", "seen"],
     default: "send",
   },
   chat: {
