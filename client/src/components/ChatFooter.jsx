@@ -54,7 +54,7 @@ export function ChatFooter() {
       <input
         type="text"
         placeholder="write a message"
-        className="flex-auto outline-none"
+        className="flex-auto outline-none bg-transparent"
         onChange={(e) => setMsg(e.target.value)}
         value={msg}
       />
