@@ -8,7 +8,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
   return (
     <div
       className={`${
-        isActive ? "bg-blue-700" : "bg-white"
+        isActive ? "bg-blue-700 shadow-md" : "bg-white"
       }  rounded-lg p-2 my-2 cursor-pointer transition-colors`}
       onClick={() => loadChat(data._id)}
     >

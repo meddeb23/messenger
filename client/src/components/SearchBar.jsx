@@ -10,7 +10,7 @@ export default function SearchBar({
   return (
     <form
       onSubmit={(e) => onSearch(e)}
-      className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3  rounded-md"
+      className="flex flex-row items-center py-2 px-3 header_box"
     >
       <button type="submit" className="cursor-pointer outline-none">
         <SearchIcon styleClasses="w-5 flex-none text-gray-400 " />

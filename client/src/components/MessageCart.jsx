@@ -4,12 +4,13 @@ import { timeFormater } from "../utility/fomat";
 
 export default function MessageCart({ msg, user, receiver }) {
   const [showDetails, setShowDetails] = useState(false);
+  const isUserMessage = msg.sender === user._id;
   return (
     <div
       onClick={() => setShowDetails((value) => !value)}
       onMouseLeave={() => setTimeout(() => setShowDetails(false), 1500)}
       className={
-        msg.sender === user._id
+        isUserMessage
           ? `my-2 cursor-pointer flex flex-row-reverse items-start ${
               msg.status === "sending" && "text-red-500"
             }`
@@ -18,24 +19,28 @@ export default function MessageCart({ msg, user, receiver }) {
     >
       <div className="w-8 h-8 rounded-full overflow-hidden mx-2">
         <img
-          src={
-            msg.sender === user._id ? user.profile_img : receiver.profile_img
-          }
+          src={isUserMessage ? user.profile_img : receiver.profile_img}
           className="object-cover h-8 w-8"
           alt=""
         />
       </div>
       <div>
         <div
-          className="border rounded-md bg-gray-100 text-gray-400 py-1 px-2 "
-          style={{ maxWidth: "16rem", width: "fit-content" }}
+          className={`${
+            isUserMessage ? "text-white" : "text-gray-600"
+          } border rounded-md bg-gray-100 py-1 px-2 `}
+          style={{
+            background: isUserMessage ? "#4c60f2" : null,
+            maxWidth: "16rem",
+            width: "fit-content",
+          }}
         >
           {msg.body}
         </div>
         {showDetails && (
           <div
             className={
-              msg.sender === user._id
+              isUserMessage
                 ? "text-xs text-gray-500 pt-2 text-right"
                 : "text-xs text-gray-500 pt-2"
             }

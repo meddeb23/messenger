@@ -172,7 +172,7 @@ export function ChatHistory() {
             {chatList.length !== 0 &&
               chatList.map((item) => (
                 <ChatCard
-                  isActive={chat && chat._id == item._id}
+                  isActive={chat && chat._id === item._id}
                   key={`chatHistory${item._id}`}
                   data={item}
                   loadChat={onLoadChatById}

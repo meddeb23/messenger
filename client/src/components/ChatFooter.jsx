@@ -36,7 +36,7 @@ export function ChatFooter() {
   };
 
   return (
-    <form className=" bg-white border-t-2 flex flex-row items-center space-x-4 h-16 px-2">
+    <form className="flex flex-row items-center space-x-4 h-14 px-2 mt-2 _box">
       <div className="hidden md:flex cursor-pointer w-8 h-8 rounded-full border  items-center justify-center">
         <svg
           className="w-4 text-gray-500"

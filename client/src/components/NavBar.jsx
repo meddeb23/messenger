@@ -63,7 +63,7 @@ export function NavBar() {
       <nav
         style={{ backgroundColor: "#050646", minHeight: "400px" }}
         className={`z-50 fixed ${isOpen ? "left-2" : "-left-20"}
-        md:h-auto md:static flex-none flex py-8 rounded-xl shadow-md w-16 flex-col justify-between items-center`}
+        md:h-auto md:static flex-none flex py-8 rounded-lg shadow-md w-16 flex-col justify-between items-center`}
       >
         <div className="flex flex-col space-y-8">
           <NavLink to="/messages">

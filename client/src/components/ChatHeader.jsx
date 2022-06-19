@@ -1,12 +1,13 @@
 import React from "react";
 import { useContext } from "react";
 import { ChatContext } from "../context";
+import H2 from "./H2";
 
 export function ChatHeader({ receiver }) {
   const { setChat } = useContext(ChatContext);
 
   return (
-    <div className="h-20 px-4 border-b-2 flex flex-row flex-none justify-between items-center relative">
+    <div className="h-16 px-4 flex flex-row flex-none justify-between items-center relative mb-2 header_box">
       <div className="flex flex-row items-center">
         <div className="w-10 h-10 flex-none rounded-full overflow-hidden">
           <img
@@ -16,7 +17,7 @@ export function ChatHeader({ receiver }) {
           />
         </div>
         <div className="ml-2">
-          <div className="text-lg font-bold text-gray-600">{receiver.name}</div>
+          <H2>{receiver.name}</H2>
           <div className="text-xs text-gray-400">Last seen 1 day ago</div>
         </div>
       </div>
