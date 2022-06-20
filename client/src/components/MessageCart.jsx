@@ -28,7 +28,7 @@ export default function MessageCart({ msg, user, receiver }) {
         <div
           className={`${
             isUserMessage ? "text-white" : "text-gray-600"
-          } border rounded-md bg-gray-100 py-1 px-2 `}
+          } rounded-md bg-gray-100 py-1 px-2 `}
           style={{
             background: isUserMessage ? "#4c60f2" : null,
             maxWidth: "16rem",

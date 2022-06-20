@@ -20,7 +20,6 @@ export function Login() {
   let { from } = location.state || { from: { pathname: "/messages" } };
 
   useEffect(() => {
-    console.log("one time thing");
     Axios.get("/api/v1/user")
       .then((res) => {
         if (res.status === 200) {
@@ -51,11 +50,11 @@ export function Login() {
         history.replace(from);
       } else setIsFetching(false);
     } catch (error) {
-      // console.log(error.response);
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message);
-        setIsFetching(false);
       }
+      setError("Oops Somting was Wrong please retry later");
+      setIsFetching(false);
     }
   };
   return isRedirecting ? (
