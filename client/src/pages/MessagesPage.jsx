@@ -5,14 +5,14 @@ import { ChatHistory, ChatTemplate } from "../template";
 import UserProfileInfo from "../template/UserProfileInfo";
 
 export function MessagesPage() {
-  const { chat, receiver } = useContext(ChatContext);
+  const { chat } = useContext(ChatContext);
 
   return (
     <>
       <NavBar />
       <ChatHistory />
       {chat && <ChatTemplate chat={chat} />}
-      {chat && receiver && <UserProfileInfo receiver={receiver} />}
+      {chat && chat.receiver && <UserProfileInfo receiver={chat.receiver} />}
     </>
   );
 }

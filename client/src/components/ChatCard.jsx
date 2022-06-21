@@ -1,4 +1,6 @@
 import React from "react";
+import { MdDone } from "react-icons/md";
+import { CheckCercle } from "./icons";
 
 export function ChatCard({ user, data, loadChat, isActive }) {
   const timeFormater = (time) => {
@@ -57,25 +59,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
               : data.lastMsg.body
             : `Say hi to ${data.receiver.name}`}
         </div>
-        <div className="w-4 h-4 text-gray-400">
-          {data.lastMsg ? (
-            data.lastMsg.status === "sending" ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 12H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            ) : null
-          ) : null}
-        </div>
+        {/* {data.lastMes && <CheckCercle status={data.lastMsg.status} />} */}
       </div>
     </div>
   );

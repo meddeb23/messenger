@@ -11,9 +11,9 @@ const Device = require("../../../user/models/Devices");
 const { normaliseChats } = require("../../utilities/validation");
 const chatList = require("../../utilities/chatUtilities");
 
-// // @route   GET /api/v1/chat/?page=0
-// // @desc    Get a limited number of user chats
-// // @access  Privat
+// @route   GET /api/v1/chat/?page=0
+// @desc    Get a limited number of user chats
+// @access  Privat
 routes.get("/", auth, async (req, res) => {
   const { page } = req.query;
   const { user } = req.body;
@@ -33,9 +33,9 @@ routes.get("/", auth, async (req, res) => {
   res.status(200).json(chats);
 });
 
-// // @route   POST /api/v1/chat/message
-// // @desc    Post a message
-// // @access  Privat
+// @route   POST /api/v1/chat/message
+// @desc    Post a message
+// @access  Privat
 routes.post("/message", auth, async (req, res) => {
   const { user, chat_id, body } = req.body;
   const chat = await Chat.findById(chat_id);
@@ -54,19 +54,23 @@ routes.post("/message", auth, async (req, res) => {
   await chat.save();
   // Update the message status to the sender user
   const senderDevices = await Device.find({ user: user._id });
-  if (senderDevices.length !== 0) {
-    senderDevices.forEach((device) => {
-      req.io.to(device.io_id).emit("msg_status_updated", { msg: savedMessage });
-    });
-  }
   // send message to the receiver
   const receiverDevices = await Device.find({ user: receiver._id });
   if (receiverDevices.length !== 0) {
     receiverDevices.forEach((device) => {
+      console.log("sendnig message to recipient", device);
       req.io.to(device.io_id).emit("receive_message", savedMessage);
     });
   }
-  res.status(203);
+  res.status(203).json({ message: savedMessage });
+  // if (senderDevices.length !== 0) {
+  //   senderDevices.forEach((device) => {
+  //     console.log("savedMessage: ", savedMessage);
+  //     req.io
+  //       .to(device.io_id)
+  //       .emit("msg_status_updated", { messages: [savedMessage] });
+  //   });
+  // }
 });
 
 // @route   GET /api/v1/chat
@@ -97,7 +101,7 @@ routes.get("/receiver/:_id", auth, async (req, res) => {
 });
 
 // @route   GET /api/v1/chat
-// @desc    search for chat by _id
+// @desc    get for chat by _id
 // @access  privat
 routes.get("/:_id", auth, async (req, res) => {
   const { _id } = req.params;
@@ -109,7 +113,7 @@ routes.get("/:_id", auth, async (req, res) => {
 
   return res.status(200).json({
     ...chat,
-    messages: messages,
+    messages: messages.reverse(),
   });
 });
 

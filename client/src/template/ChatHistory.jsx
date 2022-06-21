@@ -6,8 +6,7 @@ import UserSearchResultCart from "../components/UserSearchResultCart";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatHistory() {
-  const { setChat, setChatList, setReceiver, chatList, chat } =
-    useContext(ChatContext);
+  const { setChat, setChatList, chatList, chat } = useContext(ChatContext);
   const { user } = useContext(UserContext);
   const [search, setSearch] = useState("");
   const [searchBox, setSearchbox] = useState(false);
@@ -71,7 +70,6 @@ export function ChatHistory() {
       const res = await axios.get(`/api/v1/chat/${_id}`);
       if (res.status === 200) {
         setChat(res.data);
-        setReceiver(res.data.receiver);
         setResulat([]);
       }
       setResulat([]);

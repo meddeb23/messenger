@@ -19,7 +19,7 @@ const getChatPages = async (query = {}, page = 0, perPage = 20) => {
 };
 const getMsgPages = async (query = {}, page = 0, perPage = 20) => {
   return await Message.find(query)
-    // .sort({ send_Date: -1 })
+    .sort({ send_Date: -1 })
     .limit(perPage)
     .skip(perPage * page);
 };

@@ -37,7 +37,7 @@ const isAdmin = async (req, res, next) => {
       };
       next();
     } else {
-      throw new httpError("Access Forbidden");
+      throw new httpError("Access Forbidden", 401);
     }
   } else {
     throw new httpError("Access Deneied", 401);
@@ -45,6 +45,7 @@ const isAdmin = async (req, res, next) => {
 };
 // sokcet auth
 const socketAuth = async (io_id, _id) => {
+  console.log();
   let user = await User.findById(_id);
   let connectionExist = await Device.findOne({ io_id });
   if (!connectionExist) {
@@ -54,7 +55,8 @@ const socketAuth = async (io_id, _id) => {
     });
     const savedConnection = await newConnection.save();
     debug(`${user.name} is online with socket id : ${savedConnection.io_id}`);
-  }
+  } else
+    debug(`${user.name} is online with socket id : ${connectionExist.io_id}`);
   user.login = true;
   await user.save();
 };

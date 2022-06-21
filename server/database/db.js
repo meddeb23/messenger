@@ -5,10 +5,12 @@ const dbURI =
     ? "mongodb://localhost/Messenger"
     : process.env.MONGO_URI;
 
+mongoose.set("useCreateIndex", true);
+
 mongoose.connect(dbURI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 mongoose.connection.on("connected", () =>

@@ -107,8 +107,7 @@ routes.get("/logout", auth, (req, res) => {
 // @access  privat
 routes.get("/", auth, async (req, res) => {
   const { user } = req.body;
-  console.log("test");
-  res.status(200).json({
+  return res.status(200).json({
     user: {
       _id: user._id,
       email: user.email,
@@ -119,7 +118,6 @@ routes.get("/", auth, async (req, res) => {
       profile_img: user.profile_img,
     },
   });
-  throw Error("Error finding User info");
 });
 
 // @route   PUT /api/v1/user

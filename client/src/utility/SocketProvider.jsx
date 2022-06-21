@@ -4,7 +4,10 @@ import { useContext } from "react";
 import io from "socket.io-client";
 import { ChatContext } from "../context";
 import notiSound from "../assets/sounds/notification_sound.mp3";
-const SocketContext = React.createContext();
+
+export const SocketContext = React.createContext({
+  socket: {},
+});
 
 const ENDPOINT =
   process.env.NODE_ENV === "development"
@@ -67,8 +70,8 @@ export default function SocketProvider({ user, children }) {
       setChatList(newChatList);
     }
   };
+
   useEffect(() => {
-    console.log("useEffect socket provider");
     if (!user) return;
     console.log("socket connection is ON");
     const newSocket = io(ENDPOINT, { query: { id: user._id, user } });
@@ -79,18 +82,25 @@ export default function SocketProvider({ user, children }) {
       newSocket.close();
     };
   }, [user]);
+
   useEffect(() => {
     if (socket == null) return;
     socket.on("receive_message", (msg) => {
-      console.log("receiving a message...");
+      // console.log("receiving a message...");
+      msg.status = "delivered";
       audioPlayer.current.play();
       addMessageToChatList(msg);
       addMessageToActiveChat(msg);
-      socket.emit("update_msg_status", { msg, status: "delivered" });
+      // console.log("req update message to ", msg.status);
+      socket.emit("update_msg_status", {
+        messages: [msg],
+        status: "delivered",
+        _id: user._id,
+      });
     });
-    socket.on("msg_status_updated", ({ msg }) => {
-      console.log(`Update the message status to ${msg.status}`);
-      console.log(msg);
+    socket.on("msg_status_updated", ({ messages }) => {
+      const msg = messages[0];
+      // console.log(`Update the message status to ${msg.status}`);
       handleMessageStatusUpdate(msg);
     });
     return () => {

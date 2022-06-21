@@ -6,8 +6,8 @@ module.exports = (io) => {
   io.on("connect", (socket) => {
     // console.log(socket.handshake.query);
     socketAuth(socket.id, socket.handshake.query.id);
-    socket.on("update_msg_status", ({ msg, status }) => {
-      updateMsgStatus(io, msg, status);
+    socket.on("update_msg_status", ({ messages, status }) => {
+      updateMsgStatus(io, messages, status);
     });
     socket.on("disconnect", () => {
       disconnectUser(socket.id);

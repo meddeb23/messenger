@@ -7,7 +7,7 @@ import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
 
 export function Register() {
-  const { setUser, setIsLoggedin, setIsAdmin } = useContext(UserContext);
+  const { setUser, setIsLoggedin } = useContext(UserContext);
 
   const [values, setValues] = useForm({
     name: "",
@@ -36,7 +36,6 @@ export function Register() {
       if (res.status === 200) {
         setUser(res.data.user);
         setIsLoggedin(true);
-        // setIsAdmin(res.user.isAdmin)
         setIsFetching(false);
 
         history.replace("/messages");

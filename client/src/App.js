@@ -10,7 +10,6 @@ function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   // Active chat
   const [chat, setChat] = useState(null);
-  const [receiver, setReceiver] = useState(null);
   const [chatList, setChatList] = useState([]);
 
   return (
@@ -27,10 +26,8 @@ function App() {
       <ChatContext.Provider
         value={{
           chat,
-          receiver,
           chatList,
           setChat,
-          setReceiver,
           setChatList,
         }}
       >

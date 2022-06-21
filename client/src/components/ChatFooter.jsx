@@ -18,10 +18,13 @@ export function ChatFooter() {
         send_Date: Date.now(),
         status: "sending",
       };
-      setChat({ ...chat, messages: [...chat.messages, obj] });
+      // setChat({ ...chat, messages: [...chat.messages, obj] });
       setMsg("");
-      const res = await axios.post("/api/v1/chat/message", obj);
-      if (res.status === 201) {
+      const { status, data } = await axios.post("/api/v1/chat/message", obj);
+      if (status === 203) {
+        const messages = [...chat.messages, data.message];
+        // messages[chat.messages.length - 1] = data.message;
+        setChat({ ...chat, messages: messages });
         // display the recent chat in the top of the chat history
         // const newChatList = chatList.filter((item) => item._id !== chat._id);
         // const activeChat = chatList.find((item) => item._id === chat._id);
