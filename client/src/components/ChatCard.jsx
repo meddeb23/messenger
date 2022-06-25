@@ -7,6 +7,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
     const date = new Date(time);
     return `${date.getHours()}:${date.getMinutes()}`;
   };
+
   return (
     <div
       className={`${
@@ -59,7 +60,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
               : data.lastMsg.body
             : `Say hi to ${data.receiver.name}`}
         </div>
-        {data.lastMsg && (
+        {data.lastMsg && data.lastMsg.sender == user._id && (
           <CheckCercle
             status={data.lastMsg.status}
             img={data.receiver.profile_img}
