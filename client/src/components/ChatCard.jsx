@@ -59,7 +59,13 @@ export function ChatCard({ user, data, loadChat, isActive }) {
               : data.lastMsg.body
             : `Say hi to ${data.receiver.name}`}
         </div>
-        {data.lastMsg && <CheckCercle status={data.lastMsg.status} />}
+        {data.lastMsg && (
+          <CheckCercle
+            status={data.lastMsg.status}
+            img={data.receiver.profile_img}
+            isActive={isActive}
+          />
+        )}
       </div>
     </div>
   );
