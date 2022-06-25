@@ -18,10 +18,15 @@ const getChatPages = async (query = {}, page = 0, perPage = 20) => {
     .lean();
 };
 const getMsgPages = async (query = {}, page = 0, perPage = 20) => {
-  return await Message.find(query)
+  const messages = await Message.find(query)
     .sort({ send_Date: -1 })
-    .limit(perPage)
+    .limit(perPage + 1)
     .skip(perPage * page);
+  console.log(messages);
+  return {
+    messages: messages.slice(0, -1),
+    nextPage: messages.length > perPage,
+  };
 };
 
 module.exports = Object.freeze({ getChatById, getChatPages, getMsgPages });

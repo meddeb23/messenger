@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useContext, useState, useEffect } from "react";
+import userApi from "../api/userApi";
 import { ChatCard } from "../components";
 import SearchBar from "../components/SearchBar";
 import UserSearchResultCart from "../components/UserSearchResultCart";
@@ -32,9 +33,9 @@ export function ChatHistory() {
   };
   const onLoadUserSeggestions = async () => {
     try {
-      const res = await axios.get(`/api/v1/user/suggestion`);
-      if (res.status === 200) {
-        setUserSuggestion(res.data.users);
+      const { data, status } = await userApi.suggestion();
+      if (status === 200) {
+        setUserSuggestion(data.users);
       }
     } catch (error) {
       console.log(error);
@@ -44,10 +45,10 @@ export function ChatHistory() {
   const onSearch = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("/api/v1/user/search", { search });
-      if (res.status === 200) {
-        console.log(res.data);
-        setResulat(res.data.users);
+      const { status, data } = await userApi.search({ search });
+      if (status === 200) {
+        console.log(data);
+        setResulat(data.users);
       }
     } catch (error) {
       console.log(error.response);
@@ -57,7 +58,7 @@ export function ChatHistory() {
     try {
       const res = await axios.get(`/api/v1/chat/receiver/${_id}`);
       if (res.status === 200) {
-        setChat(res.data);
+        setChat({ ...res.data, messagesPage: 1 });
         setResulat([]);
       }
       setResulat([]);
@@ -69,7 +70,7 @@ export function ChatHistory() {
     try {
       const res = await axios.get(`/api/v1/chat/${_id}`);
       if (res.status === 200) {
-        setChat(res.data);
+        setChat({ ...res.data, messagesPage: 1 });
         setResulat([]);
       }
       setResulat([]);

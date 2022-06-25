@@ -4,7 +4,7 @@ import { ChatContext, UserContext } from "../context";
 
 export function ChatFooter() {
   const [msg, setMsg] = useState("");
-  const { chat, setChat } = useContext(ChatContext);
+  const { chat, setChat, chatList, setChatList } = useContext(ChatContext);
   const { user } = useContext(UserContext);
   const onSendMsg = async (e) => {
     e.preventDefault();
@@ -25,6 +25,7 @@ export function ChatFooter() {
         const messages = [...chat.messages, data.message];
         // messages[chat.messages.length - 1] = data.message;
         setChat({ ...chat, messages: messages });
+        addMessageToChatList(data.message);
         // display the recent chat in the top of the chat history
         // const newChatList = chatList.filter((item) => item._id !== chat._id);
         // const activeChat = chatList.find((item) => item._id === chat._id);
@@ -36,6 +37,15 @@ export function ChatFooter() {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const addMessageToChatList = (msg) => {
+    // display the recent chat in the top of the chat history
+    const newChatList = chatList.filter((item) => item._id !== msg.chat);
+    const activeChat = chatList.find((item) => item._id === msg.chat);
+    activeChat.lastMsg = msg;
+    newChatList.unshift(activeChat);
+    setChatList(newChatList);
   };
 
   return (

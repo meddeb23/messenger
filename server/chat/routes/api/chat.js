@@ -101,6 +101,24 @@ routes.get("/receiver/:_id", auth, async (req, res) => {
 });
 
 // @route   GET /api/v1/chat
+// @desc    get chat messages
+// @access  privat
+routes.get("/:_id/messages", auth, async (req, res) => {
+  const { _id } = req.params;
+  let { page } = req.query;
+  let { messages, nextPage } = await chatList.getMsgPages(
+    { chat: _id },
+    page || 0
+  );
+
+  return res.status(200).json({
+    ...chat,
+    messages: messages.reverse(),
+    nextPage,
+  });
+});
+
+// @route   GET /api/v1/chat
 // @desc    get for chat by _id
 // @access  privat
 routes.get("/:_id", auth, async (req, res) => {
@@ -109,11 +127,16 @@ routes.get("/:_id", auth, async (req, res) => {
   const { user } = req.body;
   let chat = normaliseChats(await chatList.getChatById(_id), user._id);
   if (!chat) return res.status(404).json({ message: "no chats" });
-  let messages = await chatList.getMsgPages({ chat: chat._id }, page || 0);
+  const { messages, nextPage } = await chatList.getMsgPages(
+    { chat: chat._id },
+    page || 0
+  );
 
   return res.status(200).json({
     ...chat,
     messages: messages.reverse(),
+    nextPage,
+    page: parseInt(page) || 0,
   });
 });
 

@@ -6,12 +6,13 @@ const updateMsgStatus = async (io, messages, status) => {
   try {
     console.log("updating status to ", status);
     messages.forEach(async ({ _id }) => {
+      console.log(_id);
       let msg = await Message.findById(_id);
       msg.status = status;
       const i = await msg.save();
       return i;
     });
-    console.log(messages);
+    console.log(messages[0]);
     console.log("devices", messages[0].sender);
     const senderDevices = await Device.find({ user: messages[0].sender });
     if (senderDevices.length !== 0) {

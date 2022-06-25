@@ -1,14 +1,17 @@
 import React, { useContext } from "react";
 import { ChatFooter, ChatHeader, MessageCart } from "../components";
 import { UserContext } from "../context";
-import ScrollToBottom from "react-scroll-to-bottom";
+// import ScrollToBottom from "react-scroll-to-bottom";
+import ScrollToBottom from "../components/ScrollToBottom";
 import { SocketContext } from "../utility/SocketProvider";
 import { useEffect } from "react";
 
 export function ChatTemplate({ chat }) {
   const { user } = useContext(UserContext);
   const socket = useContext(SocketContext);
+
   useEffect(() => {
+    console.log("trying to update Status to seen");
     const size = chat.messages.length;
     if (size !== 0) {
       const msg = chat.messages[size - 1];
@@ -33,7 +36,7 @@ export function ChatTemplate({ chat }) {
         style={{ height: "calc(100vh - 11rem)" }}
         className=" flex-auto rounded-lg bg-white"
       >
-        <ScrollToBottom on className="w-full h-full">
+        <ScrollToBottom chat_id={chat._id}>
           {/* <div className="w-20 border rounded-full text-center text-sm bg-gray-100 text-gray-500 font-bold py-1 mx-auto my-2">
             18 jun
           </div> */}

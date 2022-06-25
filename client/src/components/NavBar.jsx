@@ -5,6 +5,8 @@ import { NavLink, useHistory } from "react-router-dom";
 import { useState } from "react";
 import "../style/nav.css";
 
+import userApi from "../api/userApi";
+
 export function NavBar() {
   const { setIsAdmin, setUser, setIsLoggedin } = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
@@ -13,8 +15,8 @@ export function NavBar() {
   const onLogout = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.get("/api/v1/user/logout");
-      if (res.status === 200) {
+      const { status } = await userApi.logout();
+      if (status === 200) {
         history.push("/login");
         setUser(null);
         setIsLoggedin(false);

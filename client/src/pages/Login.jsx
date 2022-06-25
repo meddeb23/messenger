@@ -5,6 +5,7 @@ import { NavLink, useHistory, useLocation } from "react-router-dom";
 import { useForm } from "../utility/utility";
 import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
+import userApi from "../api/userApi";
 
 export function Login() {
   const [isRedirecting, setisRedirecting] = useState(true);
@@ -20,16 +21,17 @@ export function Login() {
   let { from } = location.state || { from: { pathname: "/messages" } };
 
   useEffect(() => {
-    Axios.get("/api/v1/user")
-      .then((res) => {
-        if (res.status === 200) {
-          setUser(res.data.user);
+    userApi
+      .getUser()
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setUser(data.user);
           history.replace(from);
         }
       })
-      .catch((error) => {
+      .catch((err) => {
         setisRedirecting(false);
-        console.log(error);
+        console.log(err);
       });
   }, []);
 
@@ -37,24 +39,18 @@ export function Login() {
     e.preventDefault();
     try {
       setIsFetching(true);
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-
-      const res = await Axios.post("/api/v1/user/login", values, config);
-      if (res.status === 200 && res.data.user) {
-        setUser(res.data.user);
+      const { status, data } = await userApi.login(values);
+      if (status === 200 && data.user) {
+        setUser(data.user);
         setIsLoggedin(true);
         history.replace(from);
       } else setIsFetching(false);
     } catch (error) {
       if (error.response && error.response.status === 400) {
         setError(error.response.data.message);
+        setError("Oops Somting was Wrong please retry later");
+        setIsFetching(false);
       }
-      setError("Oops Somting was Wrong please retry later");
-      setIsFetching(false);
     }
   };
   return isRedirecting ? (

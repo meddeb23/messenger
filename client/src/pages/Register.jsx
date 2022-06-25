@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { useForm } from "../utility/utility";
 import Loader from "../components/loader/loader";
 import { UserContext } from "../context";
+import userApi from "../api/userApi";
 
 export function Register() {
   const { setUser, setIsLoggedin } = useContext(UserContext);
@@ -24,20 +25,11 @@ export function Register() {
     e.preventDefault();
     try {
       setIsFetching(true);
-
-      const config = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      console.log("sending req");
-
-      const res = await axios.post("/api/v1/user/register", values, config);
-      if (res.status === 200) {
-        setUser(res.data.user);
+      const { status, data } = await userApi.register(values);
+      if (status === 200) {
+        setUser(data.user);
         setIsLoggedin(true);
         setIsFetching(false);
-
         history.replace("/messages");
       }
     } catch (error) {

@@ -6,19 +6,21 @@ import { useContext } from "react";
 import { Redirect, Route } from "react-router-dom";
 import { UserContext } from "../context";
 
+import userAPI from "../api";
+
 export default function AuthRoute({ children, ...rest }) {
   const { isLoggedin, setUser, setIsLoggedin } = useContext(UserContext);
   const [search, setSearch] = useState(false);
 
   useEffect(() => {
-    axios
-      .get("/api/v1/user")
-      .then((res) => {
-        if (res.status === 200) {
-          setUser(res.data.user);
+    userAPI
+      .getUser()
+      .then(({ data, status }) => {
+        if (status === 200) {
+          setUser(data.user);
           setIsLoggedin(true);
-          // setIsAdmin(res.data.isAdmin);
-          // socket_client.ioConnection(res.data.user._id);
+          // setIsAdmin(data.isAdmin);
+          // socket_client.ioConnection(data.user._id);
           setSearch(true);
         }
       })
