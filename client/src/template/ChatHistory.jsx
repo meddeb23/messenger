@@ -124,7 +124,7 @@ export function ChatHistory() {
           />
           {searchBox && (
             <ul
-              className=" bg-white border-2 border-gray-200  rounded-md shadow-lg absolute w-full mt-1 overflow-y-auto"
+              className=" bg-white dark:bg-accentdarkgray rounded-md shadow-lg absolute w-full mt-1 overflow-y-auto"
               style={{ maxHeight: "200px" }}
             >
               {resualt.length !== 0
@@ -141,7 +141,9 @@ export function ChatHistory() {
                 : userSeggestions && (
                     <>
                       <li className="font-bold text-gray-900 text-sm pb-1 border-b-2 border-gray-600 py-2 px-3 ">
-                        <div className="text-gray-600">suggestions</div>
+                        <div className="text-gray-600 dark:text-gray-200">
+                          suggestions
+                        </div>
                       </li>
                       {userSeggestions.map((item) => (
                         <UserSearchResultCart
@@ -159,10 +161,10 @@ export function ChatHistory() {
           )}
         </div>
         <section className="pl-2 pt-4">
-          <div className="flex flex-row items-center mb-4 space-x-3">
-            <h2 className="font-bold text-3xl">Inbox</h2>
+          <div className="flex flex-row items-end mb-4 space-x-3">
+            <h2 className="font-bold text-3xl dark:text-gray-50">Inbox</h2>
             {countNewMessages !== 0 && (
-              <div className="text-xs border text-red-400 border-red-400 bg-red-100 rounded-full px-2 py-1 font-bold">
+              <div className="text-xs border text-red-400 dark:bg-red-700 dark:border-red-700 border-red-400 bg-red-100 rounded-full px-2 py-1 font-bold">
                 {countNewMessages} new
               </div>
             )}

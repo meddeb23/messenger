@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Routes from "./routes/routes";
 import { UserContext } from "./context";
 import { ChatContext } from "./context/ChatContext";
 
 import SocketProvider from "./utility/SocketProvider";
+import ThemeProvide from "./context/ThemeProvide";
 function App() {
+  useEffect(() => {
+    console.log("hello world");
+  }, []);
+
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -13,29 +18,31 @@ function App() {
   const [chatList, setChatList] = useState([]);
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        isLoggedin,
-        isAdmin,
-        setUser,
-        setIsLoggedin,
-        setIsAdmin,
-      }}
-    >
-      <ChatContext.Provider
+    <ThemeProvide>
+      <UserContext.Provider
         value={{
-          chat,
-          chatList,
-          setChat,
-          setChatList,
+          user,
+          isLoggedin,
+          isAdmin,
+          setUser,
+          setIsLoggedin,
+          setIsAdmin,
         }}
       >
-        <SocketProvider user={user}>
-          <Routes />
-        </SocketProvider>
-      </ChatContext.Provider>
-    </UserContext.Provider>
+        <ChatContext.Provider
+          value={{
+            chat,
+            chatList,
+            setChat,
+            setChatList,
+          }}
+        >
+          <SocketProvider user={user}>
+            <Routes />
+          </SocketProvider>
+        </ChatContext.Provider>
+      </UserContext.Provider>
+    </ThemeProvide>
   );
 }
 

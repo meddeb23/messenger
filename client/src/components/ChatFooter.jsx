@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
+import { HiDotsVertical } from "react-icons/hi";
+import { MdSend } from "react-icons/md";
 import { ChatContext, UserContext } from "../context";
 
 export function ChatFooter() {
@@ -49,7 +51,7 @@ export function ChatFooter() {
   };
 
   return (
-    <form className="flex flex-row items-center space-x-4 h-14 px-2 mt-2 _box">
+    <form className="dark:bg-accentdarkgray flex flex-row items-center space-x-4 h-14 px-2 mt-2 _box">
       <div className="hidden md:flex cursor-pointer w-8 h-8 rounded-full border  items-center justify-center">
         <svg
           className="w-4 text-gray-500"
@@ -67,7 +69,7 @@ export function ChatFooter() {
       <input
         type="text"
         placeholder="write a message"
-        className="flex-auto outline-none bg-transparent"
+        className="flex-auto outline-none bg-transparent dark:text-gray-100"
         onChange={(e) => setMsg(e.target.value)}
         value={msg}
       />
@@ -88,28 +90,18 @@ export function ChatFooter() {
           />
         </svg>
       </div>
-      <svg
-        className=" cursor-pointer w-6 text-gray-500"
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 20 20"
-        fill="currentColor"
-      >
-        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-      </svg>
+      <HiDotsVertical
+        size={18}
+        className="cursor-pointertext-gray-500 dark:text-gray-50"
+      />
+
       <button
         type="submit"
         style={{ backgroundColor: "#4c60f2" }}
-        className="outline-none cursor-pointer w-10 h-10 shadow-lg rounded-full border flex flex-none items-center justify-center"
+        className="outline-none cursor-pointer w-10 h-10 shadow-lg rounded-full flex flex-none items-center justify-center text-white"
         onClick={(e) => onSendMsg(e)}
       >
-        <svg
-          className="w-5 text-white rotate-90 transform"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-        </svg>
+        <MdSend size={18} />
       </button>
     </form>
   );

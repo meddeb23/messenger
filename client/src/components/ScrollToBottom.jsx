@@ -11,7 +11,6 @@ export default function ScrollToBottom({ children }) {
 
   const requestMoreMessages = async (e) => {
     if (e.target.scrollTop === 0) {
-      console.log("more messages");
       try {
         const { data, status } = await axios.get(
           `/api/v1/chat/${chat._id}?page=${chat.page + 1}`
@@ -28,13 +27,11 @@ export default function ScrollToBottom({ children }) {
   };
 
   useEffect(() => {
-    console.log("new", containerRef.current);
     containerRef.current.scroll(0, containerRef.current.scrollHeight);
     if (chat.nextPage) {
       containerRef.current.addEventListener("scroll", requestMoreMessages);
     }
     return () => {
-      console.log("clearing subs");
       containerRef.current.removeEventListener("scroll", requestMoreMessages);
     };
   }, [chat]);

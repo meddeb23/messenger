@@ -1,17 +1,13 @@
 import React from "react";
-import { MdDone } from "react-icons/md";
+import { timeFormater } from "../utility/fomat";
+import Heading from "./Heading";
 import { CheckCercle } from "./icons";
 
 export function ChatCard({ user, data, loadChat, isActive }) {
-  const timeFormater = (time) => {
-    const date = new Date(time);
-    return `${date.getHours()}:${date.getMinutes()}`;
-  };
-
   return (
     <div
       className={`${
-        isActive ? "bg-blue-700 shadow-md" : "bg-white"
+        isActive ? "bg-blue-700 shadow-md" : "dark:bg-accentdarkgray bg-white"
       }  rounded-lg p-2 my-2 cursor-pointer transition-colors`}
       onClick={() => loadChat(data._id)}
     >
@@ -19,7 +15,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
         <div className="flex items-center space-x-2">
           <div
             className={`w-2 h-2 ${
-              data.receiver.login ? "bg-red-400" : "bg-transparent"
+              data.receiver.login ? "bg-red-400 " : "bg-transparent"
             } rounded-full`}
           ></div>
           <div className="w-8 h-8 rounded-full overflow-hidden">
@@ -32,7 +28,7 @@ export function ChatCard({ user, data, loadChat, isActive }) {
           <div>
             <div
               className={`${
-                isActive ? "text-white" : "text-gray-600"
+                isActive ? "text-white" : "text-gray-600 dark:text-gray-300"
               } font-bold `}
             >
               {data.receiver.name}
@@ -46,14 +42,18 @@ export function ChatCard({ user, data, loadChat, isActive }) {
         </div>
         {data.lastMsg && (
           <div
-            className={`${isActive ? "text-white" : "text-gray-400"} text-xs`}
+            className={`${isActive ? "text-white" : "text-gray-400 "} text-xs`}
           >
             {timeFormater(data.lastMsg.send_Date)}
           </div>
         )}
       </div>
       <div className="flex flex-row items-start justify-between px-4 py-2">
-        <div className={`${isActive ? "text-white" : "text-gray-500"} text-xs`}>
+        <div
+          className={`${
+            isActive ? "text-white" : "text-gray-500 dark:text-gray-200"
+          } text-xs`}
+        >
           {data.lastMsg
             ? data.lastMsg.sender === user._id
               ? `You: ${data.lastMsg.body}`

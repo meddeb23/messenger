@@ -7,7 +7,7 @@ button {
 }
 
 .header_box {
-  @apply bg-white rounded-lg shadow-lg;
+  @apply bg-white rounded-lg shadow-lg dark:bg-accentdarkgray;
 }
 ._box {
   @apply bg-white rounded-lg;

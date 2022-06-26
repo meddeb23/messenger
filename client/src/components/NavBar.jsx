@@ -6,9 +6,26 @@ import { useState } from "react";
 import "../style/nav.css";
 
 import userApi from "../api/userApi";
+import { ThemeContext } from "../context/ThemeProvide";
+import { MdLogout, MdNightsStay, MdWbSunny } from "react-icons/md";
+
+function NavbarItems({ icon, text, action }) {
+  return (
+    <div
+      className="flex flex-col items-center p-1 cursor-pointer rounded-md hover:bg-blue-900"
+      onClick={(e) => action(e)}
+    >
+      <div className="flex justify-center items-center w-6 h-6 text-2xl  text-gray-100">
+        {icon}
+      </div>
+      <div className="text-center text-xs mt-1  text-gray-200">{text}</div>
+    </div>
+  );
+}
 
 export function NavBar() {
   const { setIsAdmin, setUser, setIsLoggedin } = useContext(UserContext);
+  const { currentTheme, setcurrentTheme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(false);
   const history = useHistory();
 
@@ -133,27 +150,14 @@ export function NavBar() {
           </NavLink>
         </div>
         <div>
-          <div
-            className="cursor-pointer hover:bg-blue-900"
-            onClick={(e) => onLogout(e)}
-          >
-            <div className="mx-auto w-6 h-6 rounded-md text-gray-100">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </div>
-            <div className="text-center text-xs mt-1  text-gray-200">
-              logout
-            </div>
-          </div>
+          <NavbarItems
+            icon={currentTheme === "dark" ? <MdNightsStay /> : <MdWbSunny />}
+            text={currentTheme}
+            action={() =>
+              setcurrentTheme((value) => (value === "dark" ? "light" : "dark"))
+            }
+          />
+          <NavbarItems icon={<MdLogout />} text="logout" action={onLogout} />
         </div>
       </nav>
     </>

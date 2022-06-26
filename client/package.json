@@ -23,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "watch:css": "postcss ./src/style/tailwind.css -o ./src/style/main.css"
+    "watch:css": "npx tailwindcss -i ./src/style/tailwind.css -o ./src/style/main.css"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -44,6 +44,6 @@
     "autoprefixer": "^10.2.1",
     "postcss": "^8.2.4",
     "postcss-cli": "^8.3.1",
-    "tailwindcss": "^2.0.2"
+    "tailwindcss": "^2.2.19"
   }
 }
