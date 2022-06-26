@@ -58,13 +58,13 @@ export function Login() {
   ) : (
     <div className="mt-4 mx-auto flex justify-center items-center text-gray-600">
       <div className="mx-8">
-        <h1 className="font-bold text-4xl ml-4">Login</h1>
+        <h1 className="font-bold text-4xl ml-4 dark:text-white">Login</h1>
         <form
           autoComplete="off"
           className="my-4"
           onSubmit={(e) => onSubmitForm(e)}
         >
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
+          <div className="flex flex-row items-center bg-white dark:bg-accentdarkgray dark:border-accentdarkgray border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ export function Login() {
             <input
               type="email"
               placeholder="Enter email"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white"
               onChange={(e) => setValues(e)}
               name="email"
             />
@@ -88,7 +88,7 @@ export function Login() {
           <small className="text-gray-400 text-xs">
             We'll never share your email with anyone else.
           </small>
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
+          <div className="flex flex-row items-center bg-white dark:bg-accentdarkgray dark:border-accentdarkgray border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +106,7 @@ export function Login() {
               type={!showPwd ? "password" : "text"}
               name="password"
               placeholder="Enter password"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white"
             />
             {!showPwd ? (
               <svg

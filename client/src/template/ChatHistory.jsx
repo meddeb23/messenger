@@ -82,7 +82,12 @@ export function ChatHistory() {
   const getCountNewMessages = () => {
     let counter = 0;
     chatList.forEach((chat) => {
-      if (chat.lastMsg.status !== "seen") counter++;
+      if (
+        chat.lastMsg &&
+        chat.lastMsg.sender !== user._id &&
+        chat.lastMsg.status !== "seen"
+      )
+        counter++;
     });
     return counter;
   };

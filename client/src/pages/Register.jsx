@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { useHistory } from "react-router-dom";
+import { NavLink, useHistory } from "react-router-dom";
 
 import { useForm } from "../utility/utility";
 import Loader from "../components/loader/loader";
@@ -43,9 +43,9 @@ export function Register() {
   return (
     <div className="mt-10 mx-auto flex justify-center items-center text-gray-600">
       <div className="mx-8">
-        <h1 className="font-bold text-4xl ml-4">Register</h1>
+        <h1 className="font-bold text-4xl ml-4 dark:text-white">Register</h1>
         <form className="my-4" onSubmit={(e) => onSubmitForm(e)}>
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
+          <div className="flex flex-row items-center dark:bg-accentdarkgray dark:border-accentdarkgray bg-white border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -61,12 +61,12 @@ export function Register() {
             <input
               type="text"
               placeholder="Full name"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white"
               onChange={(e) => setValues(e)}
               name="name"
             />
           </div>
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
+          <div className="flex flex-row items-center dark:bg-accentdarkgray dark:border-accentdarkgray bg-white border-2 border-gray-200 py-2 px-3 mb-1 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -82,7 +82,7 @@ export function Register() {
             <input
               type="email"
               placeholder="Enter email"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white "
               onChange={(e) => setValues(e)}
               name="email"
             />
@@ -90,7 +90,7 @@ export function Register() {
           <small className="text-gray-400 text-xs">
             We'll never share your email with anyone else.
           </small>
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
+          <div className="flex flex-row items-center dark:bg-accentdarkgray dark:border-accentdarkgray bg-white border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -108,10 +108,10 @@ export function Register() {
               type="password"
               name="password"
               placeholder="Enter password"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white"
             />
           </div>
-          <div className="flex flex-row items-center bg-white border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
+          <div className="flex flex-row items-center dark:bg-accentdarkgray dark:border-accentdarkgray bg-white border-2 border-gray-200 py-2 px-3 mb-2 mt-4 rounded-md">
             <svg
               className="w-5 flex-none text-gray-400"
               xmlns="http://www.w3.org/2000/svg"
@@ -129,19 +129,27 @@ export function Register() {
               type="password"
               name="cPassword"
               placeholder="Confirme password"
-              className="w-44 bg-transparent outline-none ml-2 text-sm"
+              className="w-44 bg-transparent outline-none ml-2 text-sm dark:text-white"
             />
           </div>
           <small className="h-16 text-xs text-red-400">{error}</small>
           {isFetching ? (
             <Loader />
           ) : (
-            <button
-              className="block mt-4 text-center p-2 w-48 bg-purple-600 rounded-md text-white m-auto"
-              type="submit"
-            >
-              Register
-            </button>
+            <>
+              <button
+                className="block mt-4 text-center p-2 w-48 bg-purple-600 rounded-md text-white m-auto"
+                type="submit"
+              >
+                Register
+              </button>
+              <p className="text-xs text-gray-400 m-4 text-center">
+                Already have an account
+                <NavLink className="text-purple-700 pl-2" to="/login">
+                  login
+                </NavLink>
+              </p>
+            </>
           )}
         </form>
       </div>

@@ -1,14 +1,20 @@
 import React, { useContext } from "react";
 import { ChatFooter, ChatHeader, MessageCart } from "../components";
-import { UserContext } from "../context";
+import { ChatContext, SocketContext, UserContext } from "../context";
 // import ScrollToBottom from "react-scroll-to-bottom";
 import ScrollToBottom from "../components/ScrollToBottom";
-import { SocketContext } from "../utility/SocketProvider";
 import { useEffect } from "react";
 
 export function ChatTemplate({ chat }) {
   const { user } = useContext(UserContext);
+  const { chatList, setChatList } = useContext(ChatContext);
   const socket = useContext(SocketContext);
+
+  const handleMessageStatusUpdate = (msg) => {
+    const newChatList = [...chatList];
+    newChatList[0].lastMsg = msg;
+    setChatList(newChatList);
+  };
 
   useEffect(() => {
     // console.log("trying to update Status to seen");
@@ -23,6 +29,7 @@ export function ChatTemplate({ chat }) {
           status: "seen",
           _id: user._id,
         });
+        handleMessageStatusUpdate(msg);
       }
     }
   }, [chat]);

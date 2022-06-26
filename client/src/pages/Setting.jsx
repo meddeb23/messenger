@@ -1,12 +1,10 @@
-import React from "react";
-import { NavBar } from "../components";
-import Loader from "../components/loader/loader";
-
-import { useState } from "react";
 import axios from "axios";
-import { useForm } from "../utility/utility";
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
+import { NavBar, Paragraphe, Heading, InputField } from "../components";
 import { UserContext } from "../context";
+import { useForm } from "../utility/utility";
+
+import Loader from "../components/loader/loader";
 
 export function Setting() {
   const { user, setUser } = useContext(UserContext);
@@ -80,8 +78,9 @@ export function Setting() {
               </div>
             </div>
             <div className="mt-4 text-center md:text-left">
-              <h1 className="text-gray-800 text-2xl font-bold">{user.name}</h1>
-              <p className="text-gray-300 text-sm">{user.bio}</p>
+              {/* <h1 className="text-gray-800 text-2xl font-bold">{user.name}</h1> */}
+              <Heading size={"1.5rem"}>{user.name}</Heading>
+              <Paragraphe>{user.bio}</Paragraphe>
             </div>
           </div>
           <form onSubmit={(e) => saveChanges(e)}>
@@ -96,54 +95,38 @@ export function Setting() {
               className="hidden"
             />
             <div className="grid md:grid-cols-2 md:grid-row-2 gap-4 mt-10 justify-items-center">
-              <div>
-                <div>Name</div>
-                <input
-                  className="bg-white border-2 border-gray-200 mt-1 py-2 px-3 mb-1 rounded-md
-              w-56 bg-transparent outline-none text-sm"
-                  type="text"
-                  name="name"
-                  placeholder="name..."
-                  value={values.name}
-                  onChange={(e) => setValues(e)}
-                />
-              </div>
-              <div>
-                <div>bio</div>
-                <input
-                  className="bg-white border-2 border-gray-200 mt-1 py-2 px-3 mb-1 rounded-md
-              w-56 bg-transparent outline-none text-sm"
-                  type="text"
-                  name="bio"
-                  placeholder="bio..."
-                  value={values.bio}
-                  onChange={(e) => setValues(e)}
-                />
-              </div>
-              <div>
-                <div>phone</div>
-                <input
-                  className="bg-white border-2 border-gray-200 mt-1 py-2 px-3 mb-1 rounded-md
-              w-56 bg-transparent outline-none text-sm"
-                  type="text"
-                  name="phone"
-                  placeholder="phone..."
-                  value={values.phone}
-                  onChange={(e) => setValues(e)}
-                />
-              </div>
-              <div>
-                <div>Location</div>
-                <input
-                  className="bg-white border-2 border-gray-200 mt-1 py-2 px-3 mb-1 rounded-md
-              w-56 bg-transparent outline-none text-sm"
-                  type="text"
-                  name="location"
-                  placeholder="location..."
-                  value={values.location}
-                  onChange={(e) => setValues(e)}
-                />
-              </div>
+              <InputField
+                label="Name"
+                name="name"
+                onChange={(e) => setValues(e)}
+                placeholder="name..."
+                type="text"
+                value={values.name}
+              />
+              <InputField
+                label="bio"
+                name="bio"
+                onChange={(e) => setValues(e)}
+                placeholder="bio..."
+                type="text"
+                value={values.bio}
+              />
+              <InputField
+                label="phone"
+                name="phone"
+                onChange={(e) => setValues(e)}
+                placeholder="phone..."
+                type="text"
+                value={values.phone}
+              />
+              <InputField
+                label="location"
+                name="location"
+                onChange={(e) => setValues(e)}
+                placeholder="location..."
+                type="text"
+                value={values.location}
+              />
             </div>
             {fetching ? (
               <Loader />

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Routes from "./routes/routes";
-import { UserContext } from "./context";
-import { ChatContext } from "./context/ChatContext";
+import { UserContext, ChatContext, SocketProvider } from "./context";
 
-import SocketProvider from "./utility/SocketProvider";
 import ThemeProvide from "./context/ThemeProvide";
 function App() {
   useEffect(() => {
