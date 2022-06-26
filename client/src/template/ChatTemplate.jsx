@@ -57,7 +57,7 @@ export function ChatTemplate({ chat }) {
               />
             ))
           ) : (
-            <div className="text-center text-smtext-gray-500 font-bold my-2">
+            <div className="text-center text-smtext-gray-500 font-bold my-2 dark:text-white">
               {`Say hi to ${chat.receiver.name}`}
             </div>
           )}
